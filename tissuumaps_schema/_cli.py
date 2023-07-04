@@ -31,8 +31,8 @@ def cli() -> None:
 )
 def generate(version: str, indent: int) -> None:
     format_type = VERSION_FORMAT_TYPES[version]
-    schema_json_data = format_type.project_type.model_json_schema(by_alias=True)
-    schema_json = json.dumps(schema_json_data, indent=indent or None)
+    schema_data = format_type.project_type.model_json_schema(by_alias=True)
+    schema_json = json.dumps(schema_data, indent=indent or None)
     click.echo(message=schema_json)
 
 
@@ -77,12 +77,12 @@ def upgrade(
     strict: Optional[bool],
     indent: int,
 ) -> None:
-    project_json_data = json.load(project_file)
+    project_data = json.load(project_file)
     if from_version is None:
-        from_version = guess_format_version(project_json_data)
+        from_version = guess_format_version(project_data)
     from_format_type = VERSION_FORMAT_TYPES[from_version]
     to_format_type = VERSION_FORMAT_TYPES[to_version]
-    project = from_format_type().parse(project_json_data, strict=strict)
+    project = from_format_type().parse(project_data, strict=strict)
     upgraded_project = to_format_type().upgrade(project)
     upgraded_project_json = upgraded_project.model_dump_json(
         indent=indent, by_alias=True
@@ -125,8 +125,8 @@ def validate(
     quiet: bool,
     indent: int,
 ) -> None:
-    project_json_data = json.load(project_file)
+    project_data = json.load(project_file)
     if expected_version is None:
-        expected_version = guess_format_version(project_json_data)
+        expected_version = guess_format_version(project_data)
     format_type = VERSION_FORMAT_TYPES[expected_version]
-    format_type().parse(project_json_data, strict=strict)
+    format_type().parse(project_data, strict=strict)

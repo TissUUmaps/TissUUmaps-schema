@@ -14,8 +14,8 @@ VERSION_FORMAT_TYPES: dict[str, Type[Format]] = {
 }
 
 
-def guess_format_version(project_json_data: dict[str, Any]) -> str:
-    return project_json_data.get("version", _FormatV01.version)
+def guess_format_version(project_data: dict[str, Any]) -> str:
+    return project_data.get("version", _FormatV01.version)
 
 
 __all__ = [

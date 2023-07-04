@@ -15,6 +15,6 @@ class Format(Generic[TProject]):
         raise ValueError(f"Unsupported version: {project.version}")
 
     def parse(
-        self, project_json_data: dict[str, Any], strict: Optional[bool] = None
+        self, project_data: dict[str, Any], strict: Optional[bool] = None
     ) -> TProject:
-        return self.project_type.model_validate(project_json_data, strict=strict)
+        return self.project_type.model_validate(project_data, strict=strict)
