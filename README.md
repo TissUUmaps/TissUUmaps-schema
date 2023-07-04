@@ -4,7 +4,7 @@ Pydantic schema for TissUUmaps
 
 ## Requirements
 
-This software requires [Python](https://www.python.org) 3.9 or later.
+[Python](https://www.python.org) 3.9 or later
 
 ## Installation
 
