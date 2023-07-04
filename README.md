@@ -17,7 +17,7 @@ Pydantic schema for TissUUmaps
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install tissuumaps-schema.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install tissuumaps-schema:
 
     pip install tissuumaps-schema
 
