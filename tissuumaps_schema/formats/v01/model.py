@@ -382,7 +382,7 @@ class Project(ProjectBase):
         default="",
         alias="regionFile",
         description=(
-            "**(Deprecated)** GeoJSON region file loaded on project initialization. "
+            "**[Deprecated]** GeoJSON region file loaded on project initialization. "
             "Use regionFiles instead."
         ),
     )
