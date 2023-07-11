@@ -87,105 +87,314 @@ class Shape(str, Enum):
 
 
 class Layer(BaseModel):
-    name: str
-    tile_source: str = Field(alias="tileSource")
+    name: str = Field(description="Name of the image layer")
+    tile_source: str = Field(
+        alias="tileSource",
+        description="Relative path to an image file in a supported format.",
+    )
 
 
 class LayerFilter(BaseModel):
-    name: Filter
-    value: str
+    name: Filter = Field(description="Filter name.")
+    value: str = Field(description="Filter parameter.")
 
 
 class BoundingBox(BaseModel):
-    x: float
-    y: float
-    width: float
-    height: float
+    x: int = Field(description="Left coordinate of the bounding box in pixels.")
+    y: int = Field(description="Top coordinate of the bounding box in pixels.")
+    width: int = Field(description="Width of the bounding box in pixels.")
+    height: int = Field(description="Height of the bounding box in pixels.")
 
 
 class Setting(BaseModel):
-    module: str
-    function: str
+    module: str = Field(description="Module where the function or property lies.")
+    function: str = Field(description="Function or property of the given module.")
     value: Union[int, float]
 
 
 class ExpectedHeader(BaseModel):
-    x: str = Field(alias="X")
-    y: str = Field(alias="Y")
-    gb_col: Optional[str] = None
-    gb_name: Optional[str] = None
-    cb_cmap: str = ""
-    cb_col: Optional[str] = None
-    cb_gr_dict: str = ""
-    scale_col: Optional[str] = None
-    scale_factor: str = "1"
-    pie_col: Optional[str] = None
-    pie_dict: str = ""
-    shape_col: Optional[str] = None
-    shape_fixed: str = "cross"
-    shape_gr_dict: str = ""
-    opacity_col: Optional[str] = None
-    opacity: str = "1"
-    tooltip_fmt: str = ""
+    x: str = Field(alias="X", description="Name of CSV column to use as X-coordinate.")
+    y: str = Field(alias="Y", description="Name of CSV column to use as Y-coordinate.")
+    gb_col: Optional[str] = Field(
+        default=None,
+        description="Name of CSV column to use as key to group markers by.",
+    )
+    gb_name: Optional[str] = Field(
+        default=None,
+        description="Name of CSV column to display for groups instead of group key.",
+    )
+    cb_cmap: str = Field(
+        default="",
+        description="Name of D3 color scale to be used for color mapping.",
+    )
+    cb_col: Optional[str] = Field(
+        default=None,
+        description=(
+            "Name of CSV column containing scalar values for color mapping or "
+            "hexadecimal RGB colors in format '#ff0000'."
+        ),
+    )
+    cb_gr_dict: str = Field(
+        default="",
+        description=(
+            "JSON string specifying a custom dictionary for mapping group keys to "
+            "group colors. Example: "
+            "``\"{'key1': '#ff0000', 'key2': '#00ff00', 'key3': '#0000ff'}\"``."
+        ),
+    )
+    scale_col: Optional[str] = Field(
+        default=None,
+        description=(
+            "Name of CSV column containing scalar values for changing the size of "
+            "markers."
+        ),
+    )
+    scale_factor: str = Field(
+        default="1",
+        description=(
+            "Numerical value for a fixed scale factor to be applied to markers."
+        ),
+    )
+    pie_col: Optional[str] = Field(
+        default=None,
+        description=(
+            "Name of CSV column containing data for pie chart sectors. TissUUmaps "
+            "expects labels and numerical values for sectors to be separated by ':' "
+            "characters in the CSV column data."
+        ),
+    )
+    pie_dict: str = Field(
+        default="",
+        description=(
+            "JSON string specifying a custom dictionary for mapping pie chart sector "
+            "indices to colors. Example: "
+            "``\"{0: '#ff0000', 1: '#00ff00', 2: '#0000ff'}\"``. If no dictionary is "
+            "specified, TissUUmaps will use a default color palette instead."
+        ),
+    )
+    shape_col: Optional[str] = Field(
+        default=None,
+        description=(
+            "Name of CSV column containing a name or an index for marker shape."
+        ),
+    )
+    shape_fixed: str = Field(
+        default="cross",
+        description="Name or index of a single fixed shape to be used for all markers.",
+    )
+    shape_gr_dict: str = Field(
+        default="",
+        description=(
+            "JSON string specifying a custom dictionary for mapping group keys to "
+            "group shapes. Example: "
+            "``\"{'key1': 'square', 'key2': 'diamond', 'key3': 'triangle up'}\"``."
+        ),
+    )
+    opacity_col: Optional[str] = Field(
+        default=None,
+        description="Name of CSV column containing scalar values for opacities.",
+    )
+    opacity: str = Field(
+        default="1",
+        description=(
+            "Numerical value for a fixed opacity factor to be applied to markers."
+        ),
+    )
+    tooltip_fmt: str = Field(
+        default="",
+        description=(
+            "Custom formatting string used for displaying metadata about a selected "
+            "marker. See https://github.com/TissUUmaps/TissUUmaps/issues/2 for an "
+            "overview of the grammer and keywords. If no string is specified, "
+            "TissUUmaps will show default metadata depending on the context."
+        ),
+    )
 
 
 class ExpectedRadios(BaseModel):
-    cb_col: bool = False
-    cb_gr: bool = True
-    cb_gr_rand: bool = False
-    cb_gr_dict: bool = False
-    cb_gr_key: bool = True
-    pie_check: bool = False
-    scale_check: bool = False
-    shape_col: bool = False
-    shape_gr: bool = True
-    shape_gr_rand: bool = True
-    shape_gr_dict: bool = False
-    shape_fixed: bool = False
-    opacity_check: bool = False
-    no_outline: bool = Field(default=False, alias="_no_outline")
+    cb_col: bool = Field(
+        default=False,
+        description="If markers should be colored by data in CSV column.",
+    )
+    cb_gr: bool = Field(
+        default=True, description="If markers should be colored by group."
+    )
+    cb_gr_rand: bool = Field(
+        default=False, description="If group color should be generated randomly."
+    )
+    cb_gr_dict: bool = Field(
+        default=False,
+        description="If group color should be read from custom dictionary.",
+    )
+    cb_gr_key: bool = Field(
+        default=True, description="If group color should be generated from group key."
+    )
+    pie_check: bool = Field(
+        default=False, description="If markers should be rendered as pie charts."
+    )
+    scale_check: bool = Field(
+        default=False, description="If markers should be scaled by data in CSV column."
+    )
+    shape_col: bool = Field(
+        default=False,
+        description="If markers should get their shape from data in CSV column.",
+    )
+    shape_gr: bool = Field(
+        default=True, description="If markers should get their shape from group."
+    )
+    shape_gr_rand: bool = Field(
+        default=True, description="If group shape should be generated randomly."
+    )
+    shape_gr_dict: bool = Field(
+        default=False,
+        description="If group shape should be read from custom dictionary.",
+    )
+    shape_fixed: bool = Field(
+        default=False,
+        description="If a single fixed shape should be used for all markers.",
+    )
+    opacity_check: bool = Field(
+        default=False,
+        description="If markers should get their opacities from data in CSV column.",
+    )
+    no_outline: bool = Field(
+        default=False,
+        alias="_no_outline",
+        description="If marker shapes should be rendered without outline.",
+    )
 
 
 class MarkerFile(BaseModel):
-    title: str
-    comment: str = ""
-    name: str
-    auto_load: bool = Field(default=False, alias="autoLoad")
-    hide_settings: bool = Field(default=False, alias="hideSettings")
-    uid: str
+    title: str = Field(description="Name of marker button.")
+    comment: str = Field(
+        default="", description="Optional description text shown next to marker button."
+    )
+    name: str = Field(description="Name of marker tab.")
+    auto_load: bool = Field(
+        default=False,
+        alias="autoLoad",
+        description=(
+            "If the CSV file for the marker dataset should be automatically loaded "
+            "when the TMAP project is opened. If this is false, the user instead has "
+            "to click on the marker button in the GUI to load the dataset."
+        ),
+    )
+    hide_settings: bool = Field(
+        default=False,
+        alias="hideSettings",
+        description="Hide markers' settings and add a toggle button instead.",
+    )
+    uid: Optional[str] = Field(
+        default=None,
+        description=(
+            "A unique identifier used internally by TissUUmaps to reference the marker "
+            "dataset."
+        ),
+    )
     expected_header: ExpectedHeader = Field(alias="expectedHeader")
     expected_radios: ExpectedRadios = Field(
         default_factory=lambda: ExpectedRadios(), alias="expectedRadios"
     )
-    path: Union[str, list[str]]
+    path: Union[str, list[str]] = Field(
+        description=(
+            "Relative file path to CSV file in which marker data is stored. If array "
+            "of string, then a dropdown is created instead of a button."
+        ),
+    )
     settings: list[Setting] = []
 
 
 class RegionFile(BaseModel):
-    title: str
-    comment: str = ""
-    auto_load: bool = Field(default=False, alias="autoLoad")
-    path: Union[str, list[str]]
+    title: str = Field(description="Name of region button.")
+    comment: str = Field(
+        default="", description="Optional description text shown next to region button."
+    )
+    auto_load: bool = Field(
+        default=False,
+        alias="autoLoad",
+        description=(
+            "If the regions should be automatically loaded when the TMAP project is "
+            "opened. If this is false, the user instead has to click on the region "
+            "button in the GUI to load the regions."
+        ),
+    )
+    path: Union[str, list[str]] = Field(
+        description=(
+            "Relative file path to GeoJSON file in which marker data is stored. If "
+            "array of string, then a dropdown is created instead of a button."
+        ),
+    )
     settings: list[Setting] = []
 
 
 class Project(ProjectBase):
-    version: str = "0.1"
-    filename: str
+    version: str = Field(default="0.1", description="TissUUmaps schema version.")
+    filename: str = Field(description="Name of the project.")
     layers: list[Layer] = []
-    layer_opacities: dict[str, int] = Field(default={}, alias="layerOpacities")
-    layer_visibilities: dict[str, bool] = Field(default={}, alias="layerVisibilities")
-    layer_filters: dict[str, LayerFilter] = Field(default={}, alias="layerFilters")
-    filters: list[Filter] = [Filter.SATURATION, Filter.BRIGHTNESS, Filter.CONTRAST]
-    composite_mode: CompositeMode = Field(
-        default=CompositeMode.SOURCE_OVER, alias="compositeMode"
+    layer_opacities: dict[int, int] = Field(default={}, alias="layerOpacities")
+    layer_visibilities: dict[int, bool] = Field(default={}, alias="layerVisibilities")
+    layer_filters: dict[int, LayerFilter] = Field(
+        default={},
+        alias="layerFilters",
+        description="Image filters to be applied to pixels in image layers.",
     )
-    mpp: Optional[float] = None
-    bounding_box: Optional[BoundingBox] = Field(default=None, alias="boundingBox")
-    rotate: int = 0
+    filters: list[Filter] = Field(
+        default=[Filter.SATURATION, Filter.BRIGHTNESS, Filter.CONTRAST],
+        description=(
+            "List of filters shown as active filters in the GUI under the Image layers "
+            "tab."
+        ),
+    )
+    composite_mode: CompositeMode = Field(
+        default=CompositeMode.SOURCE_OVER,
+        alias="compositeMode",
+        description=(
+            "Mode defining how image layers will be merged (composited) with each "
+            "other. Valid string values are 'source-over' and 'lighter', which "
+            "correspond to 'Channels' and 'Composite' in the GUI."
+        ),
+    )
+    mpp: Optional[float] = Field(
+        default=None,
+        description=(
+            "The image scale in Microns Per Pixels. If not null, then adds a scale bar "
+            "to the viewer. Set to 0 to display the scale bar in pixels."
+        ),
+    )
+    bounding_box: Optional[BoundingBox] = Field(
+        default=None,
+        alias="boundingBox",
+        description=(
+            "Bounding box used to set initial zoom and pan on the view when loading "
+            "the project."
+        ),
+    )
+    rotate: int = Field(
+        default=0,
+        description=(
+            "Angle of rotation of the view in degrees. Only multiples of 90 degrees "
+            "are supported."
+        ),
+    )
     marker_files: list[MarkerFile] = Field(default=[], alias="markerFiles")
-    regions: list[Any] = []
+    regions: dict[str, Any] = Field(default={}, description="GeoJSON object.")
+    region_file: str = Field(
+        default="",
+        alias="regionFile",
+        description=(
+            "**(Deprecated)** GeoJSON region file loaded on project initialization. "
+            "Use regionFiles instead."
+        ),
+    )
     region_files: list[RegionFile] = Field(default=[], alias="regionFiles")
-    plugins: list[str] = []
-    hide_tabs: bool = Field(default=False, alias="hideTabs")
+    plugins: list[str] = Field(
+        default=[], description="List of plugins to load with the project."
+    )
+    hide_tabs: bool = Field(
+        default=False,
+        alias="hideTabs",
+        description=(
+            "Hide tabs of markers dataset. Only use when you have a unique marker tab."
+        ),
+    )
     settings: list[Setting] = []
