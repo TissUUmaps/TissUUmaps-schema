@@ -22,7 +22,7 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install tissuum
 
 ## Usage
 
-To list all available `{SCHEMA_VERSION}`:
+To list all available `{SCHEMA_VERSION}` values:
 
     tissuumaps-schema versions
 
