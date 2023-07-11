@@ -41,7 +41,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
   pages:
-    needs: test
+    needs: pytest
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -70,7 +70,7 @@ jobs:
       - uses: actions/upload-pages-artifact@v2
       - uses: actions/deploy-pages@v2
   pypi:
-    needs: test
+    needs: pytest
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
