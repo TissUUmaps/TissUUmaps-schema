@@ -20,7 +20,7 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
-    runs-on: ${{ matrix.platform }}}
+    runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -48,6 +48,9 @@ jobs:
       contents: read
       pages: write
       id-token: write
+    concurrency:
+      group: 'pages'
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v3
         with:
