@@ -1,4 +1,4 @@
-name: Test
+name: Test and deploy
 on:
   push:
     branches:
@@ -9,8 +9,7 @@ on:
   workflow_dispatch:
 jobs:
   test:
-    name: ${{ matrix.platform }} py${{ matrix.python-version }}
-    runs-on: ubuntu-latest
+    name: pytest ${{ matrix.platform }} py${{ matrix.python-version }}
     strategy:
       matrix:
         platform:
@@ -21,6 +20,7 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
+    runs-on: ${{ matrix.platform }}}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -38,3 +38,23 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
+  deploy:
+    name: PyPI deploy
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    - name: Install pypa/build
+      run: python3 -m pip install --user build
+    - name: Build a source tarball and a binary wheel
+      run: python3 -m build --sdist --wheel --outdir dist/ .
+    - uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_TOKEN }}

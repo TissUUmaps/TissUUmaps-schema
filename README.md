@@ -2,8 +2,7 @@
 
 [![pypi](https://img.shields.io/pypi/v/tissuumaps-schema?label=pypi)](https://pypi.org/project/tissuumaps-schema/)
 [![python](https://img.shields.io/pypi/pyversions/tissuumaps-schema?label=python)](https://www.python.org)
-[![test](https://img.shields.io/github/actions/workflow/status/TissUUmaps/tissuumaps-schema/test.yml?label=test)](https://github.com/TissUUmaps/tissuumaps-schema/actions/workflows/test.yml)
-[![build](https://img.shields.io/github/actions/workflow/status/TissUUmaps/tissuumaps-schema/build-and-publish.yml?label=build)](https://github.com/TissUUmaps/tissuumaps-schema/actions/workflows/build-and-publish.yml)
+[![test-and-deploy](https://img.shields.io/github/actions/workflow/status/TissUUmaps/tissuumaps-schema/test-and-deploy.yml?label=test-and-deploy)](https://github.com/TissUUmaps/tissuumaps-schema/actions/workflows/test-and-deploy.yml)
 [![coverage](https://img.shields.io/codecov/c/gh/TissUUmaps/tissuumaps-schema?label=coverage)](https://app.codecov.io/gh/TissUUmaps/tissuumaps-schema)
 [![issues](https://img.shields.io/github/issues/TissUUmaps/tissuumaps-schema?label=issues)](https://github.com/TissUUmaps/tissuumaps-schema/issues)
 [![pull requests](https://img.shields.io/github/issues-pr/TissUUmaps/tissuumaps-schema?label=pull%20requests)](https://github.com/TissUUmaps/tissuumaps-schema/pulls)
