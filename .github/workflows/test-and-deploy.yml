@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 jobs:
   pytest:
-    name: ${{ matrix.platform }} py${{ matrix.python-version }}
+    name: Test ${{ matrix.platform }} py${{ matrix.python-version }}
     strategy:
       matrix:
         platform:
@@ -41,6 +41,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
   pages:
+    name: Pages
     needs: pytest
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -70,6 +71,7 @@ jobs:
       - uses: actions/upload-pages-artifact@v2
       - uses: actions/deploy-pages@v2
   pypi:
+    name: PyPI
     needs: pytest
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
