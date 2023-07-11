@@ -22,21 +22,21 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install tissuum
 
 ## Usage
 
-To list all available schema versions:
+To list all available `{SCHEMA_VERSION}`:
 
     tissuumaps-schema versions
 
-To generate a JSON Schema of the specified version:
+To generate a JSON Schema for the specified `{SCHEMA_VERSION}`:
 
-    tissuumaps-schema generate --version 0.1
+    tissuumaps-schema generate --version {SCHEMA_VERSION}
 
-To upgrade a JSON file to the specified schema version:
+To upgrade an existing JSON file to the specified `{SCHEMA_VERSION}`:
 
-    tissuumaps-schema upgrade --to-version 0.2 myproject.tmap
+    tissuumaps-schema upgrade --to-version {SCHEMA_VERSION} myproject.tmap
 
-To validate a JSON file against the specified schema version:
+To validate an existing JSON file against the specified `{SCHEMA_VERSION}`:
 
-    tissuumaps-schema validate --expect-version 0.2 myproject.tmap
+    tissuumaps-schema validate --expect-version {SCHEMA_VERSION} myproject.tmap
 
 ## Support
 
