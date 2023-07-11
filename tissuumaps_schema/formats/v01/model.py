@@ -123,8 +123,8 @@ class ExpectedHeader(BaseModel):
         default=None,
         description="Name of CSV column to display for groups instead of group key.",
     )
-    cb_cmap: str = Field(
-        default="",
+    cb_cmap: Optional[str] = Field(
+        default=None,
         description="Name of D3 color scale to be used for color mapping.",
     )
     cb_col: Optional[str] = Field(
@@ -134,8 +134,8 @@ class ExpectedHeader(BaseModel):
             "hexadecimal RGB colors in format '#ff0000'."
         ),
     )
-    cb_gr_dict: str = Field(
-        default="",
+    cb_gr_dict: Optional[str] = Field(
+        default=None,
         description=(
             "JSON string specifying a custom dictionary for mapping group keys to "
             "group colors. Example: "
@@ -149,8 +149,8 @@ class ExpectedHeader(BaseModel):
             "markers."
         ),
     )
-    scale_factor: str = Field(
-        default="1",
+    scale_factor: float = Field(
+        default=1.0,
         description=(
             "Numerical value for a fixed scale factor to be applied to markers."
         ),
@@ -163,8 +163,8 @@ class ExpectedHeader(BaseModel):
             "characters in the CSV column data."
         ),
     )
-    pie_dict: str = Field(
-        default="",
+    pie_dict: Optional[str] = Field(
+        default=None,
         description=(
             "JSON string specifying a custom dictionary for mapping pie chart sector "
             "indices to colors. Example: "
@@ -182,8 +182,8 @@ class ExpectedHeader(BaseModel):
         default="cross",
         description="Name or index of a single fixed shape to be used for all markers.",
     )
-    shape_gr_dict: str = Field(
-        default="",
+    shape_gr_dict: Optional[str] = Field(
+        default=None,
         description=(
             "JSON string specifying a custom dictionary for mapping group keys to "
             "group shapes. Example: "
@@ -194,14 +194,14 @@ class ExpectedHeader(BaseModel):
         default=None,
         description="Name of CSV column containing scalar values for opacities.",
     )
-    opacity: str = Field(
-        default="1",
+    opacity: float = Field(
+        default=1.0,
         description=(
             "Numerical value for a fixed opacity factor to be applied to markers."
         ),
     )
-    tooltip_fmt: str = Field(
-        default="",
+    tooltip_fmt: Optional[str] = Field(
+        default=None,
         description=(
             "Custom formatting string used for displaying metadata about a selected "
             "marker. See https://github.com/TissUUmaps/TissUUmaps/issues/2 for an "
@@ -266,8 +266,9 @@ class ExpectedRadios(BaseModel):
 
 class MarkerFile(BaseModel):
     title: str = Field(description="Name of marker button.")
-    comment: str = Field(
-        default="", description="Optional description text shown next to marker button."
+    comment: Optional[str] = Field(
+        default=None,
+        description="Optional description text shown next to marker button.",
     )
     name: str = Field(description="Name of marker tab.")
     auto_load: bool = Field(
@@ -306,8 +307,9 @@ class MarkerFile(BaseModel):
 
 class RegionFile(BaseModel):
     title: str = Field(description="Name of region button.")
-    comment: str = Field(
-        default="", description="Optional description text shown next to region button."
+    comment: Optional[str] = Field(
+        default=None,
+        description="Optional description text shown next to region button.",
     )
     auto_load: bool = Field(
         default=False,
@@ -377,12 +379,14 @@ class Project(ProjectBase):
         ),
     )
     marker_files: list[MarkerFile] = Field(default=[], alias="markerFiles")
-    regions: dict[str, Any] = Field(default={}, description="GeoJSON object.")
-    region_file: str = Field(
-        default="",
+    regions: Optional[dict[str, Any]] = Field(
+        default=None, description="GeoJSON object."
+    )
+    region_file: Optional[str] = Field(
+        default=None,
         alias="regionFile",
         description=(
-            "**(Deprecated)** GeoJSON region file loaded on project initialization. "
+            "**[Deprecated]** GeoJSON region file loaded on project initialization. "
             "Use regionFiles instead."
         ),
     )
