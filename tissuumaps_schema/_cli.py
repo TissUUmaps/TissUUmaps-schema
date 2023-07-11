@@ -130,3 +130,9 @@ def validate(
         expected_version = guess_format_version(project_data)
     format_type = VERSION_FORMAT_TYPES[expected_version]
     format_type().parse(project_data, strict=strict)
+
+
+@cli.command(name="versions", help="List available schema versions.")
+def versions() -> None:
+    for version in VERSION_FORMAT_TYPES.keys():
+        click.echo(version)
