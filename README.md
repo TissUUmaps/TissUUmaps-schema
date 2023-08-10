@@ -44,13 +44,13 @@ To validate an existing instance of `$MODEL` against the specified `$VERSION`:
 
 ## Support
 
-For each `$VERSION` and `$MODEL`, a JSON Schema is hosted on:
+For each `$VERSION` and `$MODEL` (lower case), a JSON Schema is hosted on:
 
     https://tissuumaps.github.io/TissUUmaps-schema/$VERSION/$MODEL.json
 
-The JSON Schema of each `$VERSION` and `$MODEL` is documented on:
+The JSON Schema of each `$VERSION` and `$MODEL` (lower case) is documented on:
 
-    https://tissuumaps.github.io/TissUUmaps-schema/$VERSION/$MODEL_doc.html
+    https://tissuumaps.github.io/TissUUmaps-schema/$VERSION/$MODEL.html
 
 If you find a bug, please [raise an issue](https://github.com/TissUUmaps/TissUUmaps-schema/issues/new).
 
