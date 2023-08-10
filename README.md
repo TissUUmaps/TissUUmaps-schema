@@ -22,31 +22,35 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install tissuum
 
 ## Usage
 
-To list all available `{SCHEMA_VERSION}` values:
+To list all available `$VERSION` values:
 
     tissuumaps-schema versions
 
-To generate a JSON Schema for the specified `{SCHEMA_VERSION}`:
+To list all available `$MODEL` values for the specified `$VERSION`:
 
-    tissuumaps-schema generate --version {SCHEMA_VERSION}
+    tissuumaps-schema models --version $VERSION
 
-To upgrade an existing JSON file to the specified `{SCHEMA_VERSION}`:
+To generate a JSON Schema for the specified `$VERSION` and `$MODEL`:
 
-    tissuumaps-schema upgrade --to-version {SCHEMA_VERSION} myproject.tmap
+    tissuumaps-schema generate --version $VERSION $MODEL
 
-To validate an existing JSON file against the specified `{SCHEMA_VERSION}`:
+To upgrade an existing instance of `$MODEL` to the specified `$VERSION`:
 
-    tissuumaps-schema validate --expect-version {SCHEMA_VERSION} myproject.tmap
+    tissuumaps-schema upgrade --to-version $VERSION $MODEL myinstance.json
+
+To validate an existing instance of `$MODEL` against the specified `$VERSION`:
+
+    tissuumaps-schema validate --expect-version $VERSION $MODEL myinstance.json
 
 ## Support
 
-For each `{SCHEMA_VERSION}`, a JSON Schema is hosted on:
+For each `$VERSION` and `$MODEL` (lower case), a JSON Schema is hosted on:
 
-    https://tissuumaps.github.io/TissUUmaps-schema/{SCHEMA_VERSION}/schema.json
+    https://tissuumaps.github.io/TissUUmaps-schema/$VERSION/$MODEL.json
 
-The JSON Schema of each `{SCHEMA_VERSION}` is documented on:
+The JSON Schema of each `$VERSION` and `$MODEL` (lower case) is documented on:
 
-    https://tissuumaps.github.io/TissUUmaps-schema/{SCHEMA_VERSION}/schema_doc.html
+    https://tissuumaps.github.io/TissUUmaps-schema/$VERSION/$MODEL.html
 
 If you find a bug, please [raise an issue](https://github.com/TissUUmaps/TissUUmaps-schema/issues/new).
 

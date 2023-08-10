@@ -3,7 +3,7 @@ from typing import Any, Optional, Union
 
 from pydantic import BaseModel, Field
 
-from ..model import Project as ProjectBase
+from ._v01 import SchemaBaseModelV01
 
 
 class ColorScale(str, Enum):
@@ -329,8 +329,7 @@ class RegionFile(BaseModel):
     settings: list[Setting] = []
 
 
-class Project(ProjectBase):
-    version: str = Field(default="0.1", description="TissUUmaps schema version.")
+class Project(SchemaBaseModelV01):
     filename: str = Field(description="Name of the project.")
     layers: list[Layer] = []
     layer_opacities: dict[int, int] = Field(default={}, alias="layerOpacities")
