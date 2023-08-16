@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from ._v01 import SchemaBaseModelV01
 
@@ -92,6 +92,20 @@ class Layer(BaseModel):
         alias="tileSource",
         description="Relative path to an image file in a supported format.",
     )
+    x: Optional[float] = Field(
+        default=None, description="Left coordinate of the image in viewport coordinate."
+    )
+    y: Optional[float] = Field(
+        default=None, description="Top coordinate of the image in viewport coordinate."
+    )
+    rotation: Optional[float] = Field(
+        default=None, description="Rotation of the image in degrees."
+    )
+    flip: bool = Field(
+        default=False,
+        description="Flip the image horizontally.",
+    )
+    scale: Optional[float] = Field(default=None, description="Scale of the image.")
 
 
 class LayerFilter(BaseModel):
@@ -100,10 +114,18 @@ class LayerFilter(BaseModel):
 
 
 class BoundingBox(BaseModel):
-    x: int = Field(description="Left coordinate of the bounding box in pixels.")
-    y: int = Field(description="Top coordinate of the bounding box in pixels.")
-    width: int = Field(description="Width of the bounding box in pixels.")
-    height: int = Field(description="Height of the bounding box in pixels.")
+    x: float = Field(
+        description="Left coordinate of the bounding box in viewport coordinate."
+    )
+    y: float = Field(
+        description="Top coordinate of the bounding box in viewport coordinate."
+    )
+    width: float = Field(
+        description="Width of the bounding box in viewport coordinate."
+    )
+    height: float = Field(
+        description="Height of the bounding box in viewport coordinate."
+    )
 
 
 class Setting(BaseModel):
@@ -155,6 +177,13 @@ class ExpectedHeader(BaseModel):
             "Numerical value for a fixed scale factor to be applied to markers."
         ),
     )
+    coord_factor: float = Field(
+        default=1.0,
+        description=(
+            "Numerical value for a fixed scale factor to be applied to marker "
+            "coordinates."
+        ),
+    )
     pie_col: Optional[str] = Field(
         default=None,
         description=(
@@ -190,6 +219,27 @@ class ExpectedHeader(BaseModel):
             "``\"{'key1': 'square', 'key2': 'diamond', 'key3': 'triangle up'}\"``."
         ),
     )
+    edges_col: Optional[str] = Field(
+        default=None,
+        description=(
+            "Name of CSV column containing a name or an index for marker edges "
+            "in Network Diagram mode."
+        ),
+    )
+    collectionItem_col: Optional[str] = Field(
+        default=None,
+        description=(
+            "Name of CSV column containing a name or an index for marker collection "
+            "items in Collection mode."
+        ),
+    )
+    collectionItem_fixed: str = Field(
+        default="",
+        description=(
+            "Name or index of a single fixed collection item to be used for all "
+            "markers in Collection mode."
+        ),
+    )
     opacity_col: Optional[str] = Field(
         default=None,
         description="Name of CSV column containing scalar values for opacities.",
@@ -199,6 +249,16 @@ class ExpectedHeader(BaseModel):
         description=(
             "Numerical value for a fixed opacity factor to be applied to markers."
         ),
+    )
+    sortby_col: Optional[str] = Field(
+        default=None,
+        description=(
+            "Name of CSV column containing scalar values for sorting markers."
+        ),
+    )
+    z_order: float = Field(
+        default=1.0,
+        description=("Numerical value of z-order to be used for all markers."),
     )
     tooltip_fmt: str = Field(
         default="",
@@ -262,6 +322,41 @@ class ExpectedRadios(BaseModel):
         alias="_no_outline",
         description="If marker shapes should be rendered without outline.",
     )
+    collectionItem_col: bool = Field(
+        default=False,
+        description=(
+            "If markers should get their collection item from data in CSV column."
+        ),
+    )
+    collectionItem_fixed: bool = Field(
+        default=False,
+        description=(
+            "If a single fixed collection item should be used for all markers."
+        ),
+    )
+    sortby_check: bool = Field(
+        default=False,
+        description="If markers should be sorted by data in CSV column.",
+    )
+    sortby_desc_check: bool = Field(
+        default=False,
+        description="If markers should be sorted in descending order.",
+    )
+    edges_check: bool = Field(
+        default=False,
+        description="If markers should be connected by edges in Network Diagram mode.",
+    )
+
+
+class DropdownOption(BaseModel):
+    # We use extra="allow" here because we want to allow extra keys in the config
+    # dictionary. This is because we want to allow the user to add custom keys to the
+    # dropdown options, e.g. "expectedHeader.cb_col".
+    model_config = ConfigDict(extra="allow")
+    optionName: str = Field(description="Name displayed in the dropdown menu.")
+    name: str = Field(
+        description="Name of the tab to be loaded when the option is selected."
+    )
 
 
 class MarkerFile(BaseModel):
@@ -271,13 +366,14 @@ class MarkerFile(BaseModel):
         description="Optional description text shown next to marker button.",
     )
     name: str = Field(description="Name of marker tab.")
-    auto_load: bool = Field(
+    auto_load: Union[bool, int] = Field(
         default=False,
         alias="autoLoad",
         description=(
             "If the CSV file for the marker dataset should be automatically loaded "
             "when the TMAP project is opened. If this is false, the user instead has "
-            "to click on the marker button in the GUI to load the dataset."
+            "to click on the marker button in the GUI to load the dataset. "
+            "If this is an integer, the n-th marker dataset is automatically loaded."
         ),
     )
     hide_settings: bool = Field(
@@ -302,7 +398,23 @@ class MarkerFile(BaseModel):
             "of string, then a dropdown is created instead of a button."
         ),
     )
+    dropdown_options: Optional[list[DropdownOption]] = Field(
+        default=None,
+        alias="dropdownOptions",
+        description=(
+            "List of dropdown options. Each option is a dictionary with the keys "
+            "'title' and 'path'."
+        ),
+    )
     settings: list[Setting] = []
+    from_button: Optional[int] = Field(
+        default=None,
+        alias="fromButton",
+        description=(
+            "If this is an integer, then the marker dataset is loaded from the n-th "
+            "marker button."
+        ),
+    )
 
 
 class RegionFile(BaseModel):
@@ -331,10 +443,17 @@ class RegionFile(BaseModel):
 
 class Project(SchemaBaseModelV01):
     filename: str = Field(description="Name of the project.")
+    link: Optional[str] = Field(
+        default=None,
+        description=(
+            "Url to a publication or other external resource: a click on the filename "
+            "will open this link."
+        ),
+    )
     layers: list[Layer] = []
     layer_opacities: dict[int, int] = Field(default={}, alias="layerOpacities")
     layer_visibilities: dict[int, bool] = Field(default={}, alias="layerVisibilities")
-    layer_filters: dict[int, LayerFilter] = Field(
+    layer_filters: dict[int, list[LayerFilter]] = Field(
         default={},
         alias="layerFilters",
         description="Image filters to be applied to pixels in image layers.",
@@ -397,5 +516,30 @@ class Project(SchemaBaseModelV01):
         description=(
             "Hide tabs of markers dataset. Only use when you have a unique marker tab."
         ),
+    )
+    hide_channel_range: bool = Field(
+        default=False,
+        alias="hideChannelRange",
+        description=(
+            "Hide input range of channels. Only use when you have a unique image layer."
+        ),
+    )
+    hide_navigator: bool = Field(
+        default=False,
+        alias="hideNavigator",
+        description="Hide navigator of the viewer.",
+    )
+    collection_mode: bool = Field(
+        default=False,
+        alias="collectionMode",
+        description=(
+            "If true, then the viewer will be in collection mode, which puts "
+            "all layers in a grid next to each other."
+        ),
+    )
+    background_color: Optional[str] = Field(
+        default=None,
+        alias="backgroundColor",
+        description="Background color of the viewer.",
     )
     settings: list[Setting] = []
