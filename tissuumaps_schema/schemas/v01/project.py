@@ -123,8 +123,8 @@ class ExpectedHeader(BaseModel):
         default=None,
         description="Name of CSV column to display for groups instead of group key.",
     )
-    cb_cmap: str = Field(
-        default="",
+    cb_cmap: Optional[str] = Field(
+        default=None,
         description="Name of D3 color scale to be used for color mapping.",
     )
     cb_col: Optional[str] = Field(
@@ -149,8 +149,8 @@ class ExpectedHeader(BaseModel):
             "markers."
         ),
     )
-    scale_factor: str = Field(
-        default="1",
+    scale_factor: float = Field(
+        default=1.0,
         description=(
             "Numerical value for a fixed scale factor to be applied to markers."
         ),
@@ -194,8 +194,8 @@ class ExpectedHeader(BaseModel):
         default=None,
         description="Name of CSV column containing scalar values for opacities.",
     )
-    opacity: str = Field(
-        default="1",
+    opacity: float = Field(
+        default=1.0,
         description=(
             "Numerical value for a fixed opacity factor to be applied to markers."
         ),
@@ -266,8 +266,9 @@ class ExpectedRadios(BaseModel):
 
 class MarkerFile(BaseModel):
     title: str = Field(description="Name of marker button.")
-    comment: str = Field(
-        default="", description="Optional description text shown next to marker button."
+    comment: Optional[str] = Field(
+        default=None,
+        description="Optional description text shown next to marker button.",
     )
     name: str = Field(description="Name of marker tab.")
     auto_load: bool = Field(
@@ -306,8 +307,9 @@ class MarkerFile(BaseModel):
 
 class RegionFile(BaseModel):
     title: str = Field(description="Name of region button.")
-    comment: str = Field(
-        default="", description="Optional description text shown next to region button."
+    comment: Optional[str] = Field(
+        default=None,
+        description="Optional description text shown next to region button.",
     )
     auto_load: bool = Field(
         default=False,
@@ -377,8 +379,8 @@ class Project(SchemaBaseModelV01):
     )
     marker_files: list[MarkerFile] = Field(default=[], alias="markerFiles")
     regions: dict[str, Any] = Field(default={}, description="GeoJSON object.")
-    region_file: str = Field(
-        default="",
+    region_file: Optional[str] = Field(
+        default=None,
         alias="regionFile",
         description=(
             "**[Deprecated]** GeoJSON region file loaded on project initialization. "
