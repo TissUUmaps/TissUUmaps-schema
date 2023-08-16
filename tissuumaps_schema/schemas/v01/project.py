@@ -378,8 +378,8 @@ class Project(SchemaBaseModelV01):
         ),
     )
     marker_files: list[MarkerFile] = Field(default=[], alias="markerFiles")
-    regions: Optional[dict[str, Any]] = Field(
-        default=None, description="GeoJSON object."
+    regions: dict[str, Any] = Field(
+        default={}, description="GeoJSON object."
     )
     region_file: Optional[str] = Field(
         default=None,
