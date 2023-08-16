@@ -200,8 +200,8 @@ class ExpectedHeader(BaseModel):
             "Numerical value for a fixed opacity factor to be applied to markers."
         ),
     )
-    tooltip_fmt: Optional[str] = Field(
-        default=None,
+    tooltip_fmt: str = Field(
+        default="",
         description=(
             "Custom formatting string used for displaying metadata about a selected "
             "marker. See https://github.com/TissUUmaps/TissUUmaps/issues/2 for an "
