@@ -4,8 +4,14 @@ from typing import Optional, TextIO
 
 import click
 
-from .schemas import SCHEMA_VERSION_MODULES, RootSchemaBaseModel, guess_schema_version
+from .schemas import SCHEMA_MODULES, guess_schema_version
 from .schemas import current as current_schema_module
+from .schemas.base import RootSchemaBaseModel
+
+SCHEMA_VERSIONS = sorted(schema_module.VERSION for schema_module in SCHEMA_MODULES)
+SCHEMA_VERSION_MODULES = {
+    schema_module.VERSION: schema_module for schema_module in SCHEMA_MODULES
+}
 
 
 @click.group(name="tissuumaps-schema")
@@ -16,7 +22,7 @@ def cli() -> None:
 
 @cli.command(name="versions", help="List all supported schema versions.")
 def versions() -> None:
-    for schema_version in SCHEMA_VERSION_MODULES.keys():
+    for schema_version in SCHEMA_VERSIONS:
         click.echo(schema_version)
 
 
@@ -24,7 +30,7 @@ def versions() -> None:
 @click.option(
     "--version",
     "schema_version",
-    type=click.Choice(list(SCHEMA_VERSION_MODULES.keys())),
+    type=click.Choice(SCHEMA_VERSIONS),
     default=current_schema_module.VERSION,
     show_default=True,
     help="Schema version.",
@@ -42,7 +48,7 @@ def models(schema_version: str) -> None:
 @click.option(
     "--version",
     "schema_version",
-    type=click.Choice(list(SCHEMA_VERSION_MODULES.keys())),
+    type=click.Choice(SCHEMA_VERSIONS),
     default=current_schema_module.VERSION,
     show_default=True,
     help="Schema version.",
@@ -92,13 +98,13 @@ def generate(
 @click.option(
     "--from-version",
     "from_schema_version",
-    type=click.Choice(list(SCHEMA_VERSION_MODULES.keys())),
+    type=click.Choice(SCHEMA_VERSIONS),
     help="Schema version to upgrade from.",
 )
 @click.option(
     "--to-version",
     "to_schema_version",
-    type=click.Choice(list(SCHEMA_VERSION_MODULES.keys())),
+    type=click.Choice(SCHEMA_VERSIONS),
     default=current_schema_module.VERSION,
     show_default=True,
     help="Schema version to upgrade to.",
@@ -178,7 +184,7 @@ def upgrade(
 @click.option(
     "--expect-version",
     "schema_version",
-    type=click.Choice(list(SCHEMA_VERSION_MODULES.keys())),
+    type=click.Choice(SCHEMA_VERSIONS),
     default=current_schema_module.VERSION,
     show_default=True,
     help="Schema version to expect.",
