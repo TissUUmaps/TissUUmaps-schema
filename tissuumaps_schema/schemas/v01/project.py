@@ -134,8 +134,8 @@ class ExpectedHeader(BaseModel):
             "hexadecimal RGB colors in format '#ff0000'."
         ),
     )
-    cb_gr_dict: Optional[str] = Field(
-        default=None,
+    cb_gr_dict: str = Field(
+        default="",
         description=(
             "JSON string specifying a custom dictionary for mapping group keys to "
             "group colors. Example: "
