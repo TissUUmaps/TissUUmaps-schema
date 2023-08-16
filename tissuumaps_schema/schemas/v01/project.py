@@ -182,8 +182,8 @@ class ExpectedHeader(BaseModel):
         default="cross",
         description="Name or index of a single fixed shape to be used for all markers.",
     )
-    shape_gr_dict: Optional[str] = Field(
-        default=None,
+    shape_gr_dict: str = Field(
+        default="",
         description=(
             "JSON string specifying a custom dictionary for mapping group keys to "
             "group shapes. Example: "
