@@ -4,7 +4,7 @@ from typing import Optional, TextIO
 
 import click
 
-from .schemas import SCHEMA_MODULES_BY_VERSION, SchemaBaseModel, guess_schema_version
+from .schemas import SCHEMA_VERSION_MODULES, RootSchemaBaseModel, guess_schema_version
 from .schemas import current as current_schema_module
 
 
@@ -16,25 +16,25 @@ def cli() -> None:
 
 @cli.command(name="versions", help="List all supported schema versions.")
 def versions() -> None:
-    for version in SCHEMA_MODULES_BY_VERSION.keys():
-        click.echo(version)
+    for schema_version in SCHEMA_VERSION_MODULES.keys():
+        click.echo(schema_version)
 
 
 @cli.command(name="models", help="List all supported models.")
 @click.option(
     "--version",
     "schema_version",
-    type=click.Choice(list(SCHEMA_MODULES_BY_VERSION.keys())),
+    type=click.Choice(list(SCHEMA_VERSION_MODULES.keys())),
     default=current_schema_module.VERSION,
     show_default=True,
     help="Schema version.",
 )
 def models(schema_version: str) -> None:
-    schema_module = SCHEMA_MODULES_BY_VERSION[schema_version]
+    schema_module = SCHEMA_VERSION_MODULES[schema_version]
     for model_type_name, model_type in inspect.getmembers(
         schema_module, inspect.isclass
     ):
-        if issubclass(model_type, SchemaBaseModel):
+        if issubclass(model_type, RootSchemaBaseModel):
             click.echo(model_type_name)
 
 
@@ -42,7 +42,7 @@ def models(schema_version: str) -> None:
 @click.option(
     "--version",
     "schema_version",
-    type=click.Choice(list(SCHEMA_MODULES_BY_VERSION.keys())),
+    type=click.Choice(list(SCHEMA_VERSION_MODULES.keys())),
     default=current_schema_module.VERSION,
     show_default=True,
     help="Schema version.",
@@ -69,18 +69,18 @@ def generate(
     json_schema_file: Optional[TextIO],
     model_type_name: str,
 ) -> None:
-    schema_module = SCHEMA_MODULES_BY_VERSION[schema_version]
+    schema_module = SCHEMA_VERSION_MODULES[schema_version]
     model_type = getattr(schema_module, model_type_name, None)
-    if model_type is None or not issubclass(model_type, SchemaBaseModel):
-        all_model_type_names = [
+    if model_type is None or not issubclass(model_type, RootSchemaBaseModel):
+        root_model_type_names = [
             model_type_name
             for model_type_name, model_type in inspect.getmembers(
                 schema_module, inspect.isclass
             )
-            if issubclass(model_type, SchemaBaseModel)
+            if issubclass(model_type, RootSchemaBaseModel)
         ]
         raise click.BadParameter(
-            f"'{model_type_name}' not in {all_model_type_names}", param_hint="MODEL"
+            f"'{model_type_name}' not in {root_model_type_names}", param_hint="MODEL"
         )
     json_schema_data = model_type.model_json_schema(by_alias=True)
     _remove_titles_inplace(json_schema_data)
@@ -92,13 +92,13 @@ def generate(
 @click.option(
     "--from-version",
     "from_schema_version",
-    type=click.Choice(list(SCHEMA_MODULES_BY_VERSION.keys())),
+    type=click.Choice(list(SCHEMA_VERSION_MODULES.keys())),
     help="Schema version to upgrade from.",
 )
 @click.option(
     "--to-version",
     "to_schema_version",
-    type=click.Choice(list(SCHEMA_MODULES_BY_VERSION.keys())),
+    type=click.Choice(list(SCHEMA_VERSION_MODULES.keys())),
     default=current_schema_module.VERSION,
     show_default=True,
     help="Schema version to upgrade to.",
@@ -139,32 +139,32 @@ def upgrade(
     model_data = json.load(model_instance_file)
     if from_schema_version is None:
         from_schema_version = guess_schema_version(model_data)
-    from_schema_module = SCHEMA_MODULES_BY_VERSION[from_schema_version]
+    from_schema_module = SCHEMA_VERSION_MODULES[from_schema_version]
     from_model_type = getattr(from_schema_module, model_type_name, None)
-    if from_model_type is None or not isinstance(from_model_type, SchemaBaseModel):
-        all_from_model_type_names = [
+    if from_model_type is None or not isinstance(from_model_type, RootSchemaBaseModel):
+        root_from_model_type_names = [
             model_type_name
             for model_type_name, model_type in inspect.getmembers(
                 from_schema_module, inspect.isclass
             )
-            if issubclass(model_type, SchemaBaseModel)
+            if issubclass(model_type, RootSchemaBaseModel)
         ]
         raise click.BadParameter(
-            f"'{model_type_name}' not in {all_from_model_type_names}",
+            f"'{model_type_name}' not in {root_from_model_type_names}",
             param_hint="MODEL",
         )
-    to_schema_module = SCHEMA_MODULES_BY_VERSION[to_schema_version]
+    to_schema_module = SCHEMA_VERSION_MODULES[to_schema_version]
     to_model_type = getattr(to_schema_module, model_type_name, None)
-    if to_model_type is None or not isinstance(to_model_type, SchemaBaseModel):
-        all_to_model_type_names = [
+    if to_model_type is None or not isinstance(to_model_type, RootSchemaBaseModel):
+        root_to_model_type_names = [
             model_type_name
             for model_type_name, model_type in inspect.getmembers(
                 to_schema_module, inspect.isclass
             )
-            if issubclass(model_type, SchemaBaseModel)
+            if issubclass(model_type, RootSchemaBaseModel)
         ]
         raise click.BadParameter(
-            f"'{model_type_name}' not in {all_to_model_type_names}", param_hint="MODEL"
+            f"'{model_type_name}' not in {root_to_model_type_names}", param_hint="MODEL"
         )
     model_instance = from_model_type.parse(model_data, strict=strict)
     upgraded_model_instance = to_model_type.upgrade(model_instance)
@@ -178,7 +178,7 @@ def upgrade(
 @click.option(
     "--expect-version",
     "schema_version",
-    type=click.Choice(list(SCHEMA_MODULES_BY_VERSION.keys())),
+    type=click.Choice(list(SCHEMA_VERSION_MODULES.keys())),
     default=current_schema_module.VERSION,
     show_default=True,
     help="Schema version to expect.",
@@ -201,18 +201,18 @@ def validate(
     model_data = json.load(model_instance_file)
     if schema_version is None:
         schema_version = guess_schema_version(model_data)
-    schema_module = SCHEMA_MODULES_BY_VERSION[schema_version]
+    schema_module = SCHEMA_VERSION_MODULES[schema_version]
     model_type = getattr(schema_module, model_type_name, None)
-    if model_type is None or not issubclass(model_type, SchemaBaseModel):
-        all_model_type_names = [
+    if model_type is None or not issubclass(model_type, RootSchemaBaseModel):
+        root_model_type_names = [
             model_type_name
             for model_type_name, model_type in inspect.getmembers(
                 schema_module, inspect.isclass
             )
-            if issubclass(model_type, SchemaBaseModel)
+            if issubclass(model_type, RootSchemaBaseModel)
         ]
         raise click.BadParameter(
-            f"'{model_type_name}' not in {all_model_type_names}", param_hint="MODEL"
+            f"'{model_type_name}' not in {root_model_type_names}", param_hint="MODEL"
         )
     model_type.parse(model_data, strict=strict)
 
