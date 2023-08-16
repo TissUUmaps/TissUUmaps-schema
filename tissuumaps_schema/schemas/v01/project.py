@@ -163,8 +163,8 @@ class ExpectedHeader(BaseModel):
             "characters in the CSV column data."
         ),
     )
-    pie_dict: Optional[str] = Field(
-        default=None,
+    pie_dict: str = Field(
+        default="",
         description=(
             "JSON string specifying a custom dictionary for mapping pie chart sector "
             "indices to colors. Example: "
