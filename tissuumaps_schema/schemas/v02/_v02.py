@@ -1,9 +1,9 @@
 from pydantic import Field
 
-from ..base import SchemaBaseModel
+from ..base import RootSchemaBaseModel
 
 VERSION = "0.2"
 
 
-class SchemaBaseModelV02(SchemaBaseModel):
+class RootSchemaBaseModelV02(RootSchemaBaseModel):
     schema_version: str = Field(default=VERSION, alias="schemaVersion")
