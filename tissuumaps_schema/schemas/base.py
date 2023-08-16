@@ -1,11 +1,12 @@
 from typing import Any, Optional, Type, TypeVar
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 T = TypeVar("T", bound="SchemaBaseModel")
 
 
 class SchemaBaseModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     _PREVIOUS_MODEL_TYPE: Optional[Type["SchemaBaseModel"]] = None
     schema_version: str = Field(alias="schemaVersion")
 
