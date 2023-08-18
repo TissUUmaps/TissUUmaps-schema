@@ -208,7 +208,7 @@ class ExpectedHeader(SchemaBaseModel):
             "Name of CSV column containing a name or an index for marker shape."
         ),
     )
-    shape_fixed: str = Field(
+    shape_fixed: Optional[str] = Field(
         default="cross",
         description="Name or index of a single fixed shape to be used for all markers.",
     )
@@ -366,7 +366,10 @@ class MarkerFile(SchemaBaseModel):
         default=None,
         description="Optional description text shown next to marker button.",
     )
-    name: str = Field(description="Name of marker tab.")
+    name: Optional[str] = Field(
+        default=None,
+        description="Name of marker tab."
+    )
     auto_load: Union[bool, int] = Field(
         default=False,
         alias="autoLoad",
@@ -443,7 +446,10 @@ class RegionFile(SchemaBaseModel):
 
 
 class Project(RootSchemaBaseModelV01):
-    filename: str = Field(description="Name of the project.")
+    filename: Optional[str] = Field(
+        default=None,
+        description="Name of the project."
+    )
     link: Optional[str] = Field(
         default=None,
         description=(
