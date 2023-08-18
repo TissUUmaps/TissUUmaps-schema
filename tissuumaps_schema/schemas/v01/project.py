@@ -366,10 +366,7 @@ class MarkerFile(SchemaBaseModel):
         default=None,
         description="Optional description text shown next to marker button.",
     )
-    name: Optional[str] = Field(
-        default=None,
-        description="Name of marker tab."
-    )
+    name: Optional[str] = Field(default=None, description="Name of marker tab.")
     auto_load: Union[bool, int] = Field(
         default=False,
         alias="autoLoad",
@@ -446,10 +443,7 @@ class RegionFile(SchemaBaseModel):
 
 
 class Project(RootSchemaBaseModelV01):
-    filename: Optional[str] = Field(
-        default=None,
-        description="Name of the project."
-    )
+    filename: Optional[str] = Field(default=None, description="Name of the project.")
     link: Optional[str] = Field(
         default=None,
         description=(
