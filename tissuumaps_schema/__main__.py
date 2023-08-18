@@ -2,7 +2,7 @@ from tissuumaps_schema._cli import cli
 
 
 def main():
-    cli()
+    cli(prog_name="tissuumaps-schema")
 
 
 if __name__ == "__main__":
