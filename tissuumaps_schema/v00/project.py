@@ -1,11 +1,12 @@
 from enum import Enum
-from typing import Any, Optional, Type, Union
+from typing import Any, Optional, Union
 
 from pydantic import ConfigDict, Field
 
-from ..base import RootSchemaBaseModel, SchemaBaseModel
-from ..v00 import Project as ProjectV00
-from .base import RootSchemaBaseModelV01
+from ..base import SchemaBaseModel
+from .base import RootSchemaBaseModelV00
+
+# TODO add/remove/change fields as needed
 
 
 class ColorScale(str, Enum):
@@ -466,8 +467,7 @@ class RegionFile(SchemaBaseModel):
     settings: list[Setting] = []
 
 
-class Project(RootSchemaBaseModelV01):
-    _previous_model_type: Optional[Type[RootSchemaBaseModel]] = ProjectV00
+class Project(RootSchemaBaseModelV00):
     filename: Optional[str] = Field(default=None, description="Name of the project.")
     link: Optional[str] = Field(
         default=None,
@@ -569,12 +569,3 @@ class Project(RootSchemaBaseModelV01):
         description="Background color of the viewer.",
     )
     settings: list[Setting] = []
-
-    @classmethod
-    def _upgrade_from_previous_model(
-        cls, previous_model: RootSchemaBaseModel
-    ) -> "Project":
-        assert isinstance(previous_model, ProjectV00)
-        data = previous_model.model_dump(by_alias=True)
-        # TODO make changes to data here
-        return Project.model_validate(data)
