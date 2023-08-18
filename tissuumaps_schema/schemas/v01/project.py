@@ -458,7 +458,7 @@ class Project(RootSchemaBaseModelV01):
         ),
     )
     layers: list[Layer] = []
-    layer_opacities: dict[int, int] = Field(default={}, alias="layerOpacities")
+    layer_opacities: dict[int, float] = Field(default={}, alias="layerOpacities")
     layer_visibilities: dict[int, bool] = Field(default={}, alias="layerVisibilities")
     layer_filters: dict[int, list[LayerFilter]] = Field(
         default={},
