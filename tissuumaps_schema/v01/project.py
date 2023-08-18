@@ -51,6 +51,29 @@ class ColorScale(str, Enum):
 class CompositeMode(str, Enum):
     SOURCE_OVER = "source-over"
     LIGHTER = "lighter"
+    DARKEN = "darken"
+    SOURCE_ATOP = "source-atop"
+    SOURCE_IN = "source-in"
+    SOURCE_OUT = "source-out"
+    DESTINATION_OVER = "destination-over"
+    DESTINATION_ATOP = "destination-atop"
+    DESTINATION_IN = "destination-in"
+    DESTINATION_OUT = "destination-out"
+    COPY = "copy"
+    XOR = "xor"
+    MULTIPLY = "multiply"
+    SCREEN = "screen"
+    OVERLAY = "overlay"
+    COLOR_DODGE = "color-dodge"
+    COLOR_BURN = "color-burn"
+    HARD_LIGHT = "hard-light"
+    SOFT_LIGHT = "soft-light"
+    DIFFERENCE = "difference"
+    EXCLUSION = "exclusion"
+    HUE = "hue"
+    SATURATION = "saturation"
+    COLOR = "color"
+    LUMINOSITY = "luminosity"
 
 
 class Filter(str, Enum):
@@ -366,7 +389,7 @@ class MarkerFile(SchemaBaseModel):
         default=None,
         description="Optional description text shown next to marker button.",
     )
-    name: str = Field(description="Name of marker tab.")
+    name: Optional[str] = Field(default=None, description="Name of marker tab.")
     auto_load: Union[bool, int] = Field(
         default=False,
         alias="autoLoad",
@@ -443,7 +466,7 @@ class RegionFile(SchemaBaseModel):
 
 
 class Project(RootSchemaBaseModelV01):
-    filename: str = Field(description="Name of the project.")
+    filename: Optional[str] = Field(default=None, description="Name of the project.")
     link: Optional[str] = Field(
         default=None,
         description=(
@@ -452,7 +475,7 @@ class Project(RootSchemaBaseModelV01):
         ),
     )
     layers: list[Layer] = []
-    layer_opacities: dict[int, int] = Field(default={}, alias="layerOpacities")
+    layer_opacities: dict[int, float] = Field(default={}, alias="layerOpacities")
     layer_visibilities: dict[int, bool] = Field(default={}, alias="layerVisibilities")
     layer_filters: dict[int, list[LayerFilter]] = Field(
         default={},
