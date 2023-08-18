@@ -230,7 +230,7 @@ class ExpectedHeader(SchemaBaseModel):
             "Name of CSV column containing a name or an index for marker shape."
         ),
     )
-    shape_fixed: Optional[str] = Field(
+    shape_fixed: str = Field(
         default="cross",
         description="Name or index of a single fixed shape to be used for all markers.",
     )
