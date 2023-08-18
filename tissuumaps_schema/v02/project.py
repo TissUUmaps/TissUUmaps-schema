@@ -1,9 +1,8 @@
 from typing import Type
 
-from tissuumaps_schema.schemas.base import RootSchemaBaseModel
-
+from ..base import RootSchemaBaseModel
 from ..v01 import Project as PreviousProject
-from ._v02 import RootSchemaBaseModelV02
+from .base import RootSchemaBaseModelV02
 
 
 class Project(RootSchemaBaseModelV02):

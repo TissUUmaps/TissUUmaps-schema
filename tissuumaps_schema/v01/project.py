@@ -4,7 +4,7 @@ from typing import Any, Optional, Union
 from pydantic import ConfigDict, Field
 
 from ..base import SchemaBaseModel
-from ._v01 import RootSchemaBaseModelV01
+from .base import RootSchemaBaseModelV01
 
 
 class ColorScale(str, Enum):

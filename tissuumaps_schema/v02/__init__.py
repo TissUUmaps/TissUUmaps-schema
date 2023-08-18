@@ -1,4 +1,4 @@
-from ._v02 import VERSION
+from .base import VERSION
 from .project import Project
 
 __all__ = ["VERSION", "Project"]

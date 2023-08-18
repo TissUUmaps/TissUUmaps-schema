@@ -4,9 +4,8 @@ from typing import Optional, TextIO
 
 import click
 
-from .schemas import SCHEMA_MODULES, guess_schema_version
-from .schemas import current as current_schema_module
-from .schemas.base import RootSchemaBaseModel
+from .base import RootSchemaBaseModel
+from .utils import SCHEMA_MODULES, current_schema_module, guess_schema_version
 
 SCHEMA_VERSIONS = sorted(schema_module.VERSION for schema_module in SCHEMA_MODULES)
 SCHEMA_VERSION_MODULES = {
@@ -14,7 +13,7 @@ SCHEMA_VERSION_MODULES = {
 }
 
 
-@click.group(name="tissuumaps-schema")
+@click.group()
 @click.version_option()
 def cli() -> None:
     pass
