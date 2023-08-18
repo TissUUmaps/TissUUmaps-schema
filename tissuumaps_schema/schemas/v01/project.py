@@ -75,6 +75,7 @@ class CompositeMode(str, Enum):
     COLOR = "color"
     LUMINOSITY = "luminosity"
 
+
 class Filter(str, Enum):
     COLOR = "Color"
     BRIGHTNESS = "Brightness"
