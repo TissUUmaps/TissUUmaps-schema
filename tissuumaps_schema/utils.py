@@ -1,10 +1,10 @@
 from typing import Any
 
-from . import v01, v02
+from . import v01
 
-SCHEMA_MODULES = [v01, v02]
+SCHEMA_MODULES = [v01]
 
-current_schema_module = v02
+current_schema_module = v01
 
 
 def guess_schema_version(model_data: dict[str, Any]) -> str:
