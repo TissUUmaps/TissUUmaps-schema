@@ -146,7 +146,7 @@ def upgrade(
         from_schema_version = guess_schema_version(model_data)
     from_schema_module = SCHEMA_VERSION_MODULES[from_schema_version]
     from_model_type = getattr(from_schema_module, model_type_name, None)
-    if from_model_type is None or not isinstance(from_model_type, RootSchemaBaseModel):
+    if from_model_type is None or not issubclass(from_model_type, RootSchemaBaseModel):
         root_from_model_type_names = [
             model_type_name
             for model_type_name, model_type in inspect.getmembers(
@@ -160,7 +160,7 @@ def upgrade(
         )
     to_schema_module = SCHEMA_VERSION_MODULES[to_schema_version]
     to_model_type = getattr(to_schema_module, model_type_name, None)
-    if to_model_type is None or not isinstance(to_model_type, RootSchemaBaseModel):
+    if to_model_type is None or not issubclass(to_model_type, RootSchemaBaseModel):
         root_to_model_type_names = [
             model_type_name
             for model_type_name, model_type in inspect.getmembers(

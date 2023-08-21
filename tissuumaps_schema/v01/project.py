@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Optional, Type, Union
+from typing import Any, ClassVar, Optional, Type, Union
 
 from pydantic import ConfigDict, Field
 
@@ -467,7 +467,7 @@ class RegionFile(SchemaBaseModel):
 
 
 class Project(RootSchemaBaseModelV01):
-    _previous_model_type: Optional[Type[RootSchemaBaseModel]] = ProjectV00
+    _previous_model_type: ClassVar[Optional[Type[RootSchemaBaseModel]]] = ProjectV00
     filename: Optional[str] = Field(default=None, description="Name of the project.")
     link: Optional[str] = Field(
         default=None,
@@ -571,10 +571,10 @@ class Project(RootSchemaBaseModelV01):
     settings: list[Setting] = []
 
     @classmethod
-    def _upgrade_from_previous_model(
-        cls, previous_model: RootSchemaBaseModel
+    def _upgrade_previous(
+        cls, previous_model_instance: RootSchemaBaseModel
     ) -> "Project":
-        assert isinstance(previous_model, ProjectV00)
-        data = previous_model.model_dump(by_alias=True)
+        assert isinstance(previous_model_instance, ProjectV00)
+        data = previous_model_instance.model_dump(by_alias=True)
         # TODO make changes to data here
         return Project.model_validate(data)
