@@ -184,8 +184,6 @@ def upgrade(
     "--expect-version",
     "schema_version",
     type=click.Choice(SCHEMA_VERSIONS),
-    default=current_schema_module.VERSION,
-    show_default=True,
     help="Schema version to expect.",
 )
 @click.option(
