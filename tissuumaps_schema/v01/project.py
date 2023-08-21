@@ -575,6 +575,61 @@ class Project(RootSchemaBaseModelV01):
         cls, previous_model_instance: RootSchemaBaseModel
     ) -> "Project":
         assert isinstance(previous_model_instance, ProjectV00)
-        data = previous_model_instance.model_dump(by_alias=True)
-        # TODO make changes to data here
-        return Project.model_validate(data)
+        project_data = previous_model_instance.model_dump(
+            by_alias=True, exclude={"schema_version"}
+        )
+        for marker_file_data in project_data["markerFiles"]:
+            assert isinstance(marker_file_data, dict)
+            expected_csv_data: dict[str, Any] = marker_file_data.pop("expectedCSV")
+            expected_header_data = marker_file_data["expectedHeader"] = {
+                "X": expected_csv_data["X_col"],
+                "Y": expected_csv_data["Y_col"],
+            }
+            if expected_csv_data["key"] == "letters":  # TODO potentially change to enum
+                expected_header_data["gb_col"] = expected_csv_data.get("group", None)
+                expected_header_data["gb_name"] = expected_csv_data.get("name", None)
+            else:
+                expected_header_data["gb_col"] = expected_csv_data.get("name", None)
+                expected_header_data["gb_name"] = expected_csv_data.get("group", None)
+            expected_radios_data = marker_file_data[
+                "expectedRadios"
+            ] = marker_file_data.get("expectedRadios", {})
+            piechart_value = expected_csv_data.get("piechart")
+            expected_radios_data["pie_check"] = bool(piechart_value)
+            expected_header_data["pie_col"] = piechart_value or None
+            color_value = expected_csv_data.get("color")
+            expected_radios_data["cb_gr"] = bool(color_value)
+            expected_header_data["cb_col"] = color_value or None
+            if color_value:
+                expected_radios_data["cb_col"] = True
+            scale_value = expected_csv_data.get("scale")
+            expected_radios_data["scale_check"] = bool(scale_value)
+            expected_header_data["scale_col"] = scale_value or None
+            title_value: str = marker_file_data["title"]
+            marker_file_data["name"] = title_value.replace("Download", "")
+            for setting_data in marker_file_data.get("settings", []):
+                assert isinstance(setting_data, dict)
+                module_value = setting_data["module"]
+                function_value = setting_data["function"]
+                value_value = setting_data["value"]
+                if module_value == "markerUtils" and function_value == "_randomShape":
+                    shape_fixed_value = not value_value  # TODO
+                    expected_radios_data["shape_fixed"] = shape_fixed_value
+                    if not shape_fixed_value:
+                        expected_header_data["shape_fixed"] = None  # TODO
+                if module_value == "glUtils" and function_value == "_markerOpacity":
+                    function_value = setting_data["function"] = "_markerOpacityOld"
+                    expected_header_data["opacity"] = value_value
+                if (
+                    module_value == "markerUtils" and function_value == "_colorsperkey"
+                ) or (
+                    module_value == "HTMLElementUtils"
+                    and function_value in ("_colorsperiter", "_colorsperbarcode")
+                ):
+                    expected_radios_data["cb_gr"] = True
+                    expected_radios_data["cb_gr_rand"] = False
+                    expected_radios_data["cb_gr_key"] = False
+                    expected_radios_data["cb_gr_dict"] = True
+                    expected_header_data["cb_gr_dict"] = None  # TODO
+            marker_file_data["hideSettings"] = True
+        return Project.model_validate(project_data)
