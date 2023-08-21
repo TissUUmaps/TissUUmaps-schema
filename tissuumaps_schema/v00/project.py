@@ -6,7 +6,7 @@ from pydantic import ConfigDict, Field
 from ..base import SchemaBaseModel
 from .base import RootSchemaBaseModelV00
 
-# TODO add/remove/change fields as needed
+# TODO remove v0.1 fields as appropriate
 
 
 class ColorScale(str, Enum):
@@ -160,141 +160,13 @@ class Setting(SchemaBaseModel):
     value: Union[int, float]
 
 
-class ExpectedHeader(SchemaBaseModel):
-    x: str = Field(alias="X", description="Name of CSV column to use as X-coordinate.")
-    y: str = Field(alias="Y", description="Name of CSV column to use as Y-coordinate.")
-    gb_col: Optional[str] = Field(
-        default=None,
-        description="Name of CSV column to use as key to group markers by.",
-    )
-    gb_name: Optional[str] = Field(
-        default=None,
-        description="Name of CSV column to display for groups instead of group key.",
-    )
-    cb_cmap: Optional[str] = Field(
-        default=None,
-        description="Name of D3 color scale to be used for color mapping.",
-    )
-    cb_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing scalar values for color mapping or "
-            "hexadecimal RGB colors in format '#ff0000'."
-        ),
-    )
-    cb_gr_dict: str = Field(
-        default="",
-        description=(
-            "JSON string specifying a custom dictionary for mapping group keys to "
-            "group colors. Example: "
-            "``\"{'key1': '#ff0000', 'key2': '#00ff00', 'key3': '#0000ff'}\"``."
-        ),
-    )
-    scale_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing scalar values for changing the size of "
-            "markers."
-        ),
-    )
-    scale_factor: float = Field(
-        default=1.0,
-        description=(
-            "Numerical value for a fixed scale factor to be applied to markers."
-        ),
-    )
-    coord_factor: float = Field(
-        default=1.0,
-        description=(
-            "Numerical value for a fixed scale factor to be applied to marker "
-            "coordinates."
-        ),
-    )
-    pie_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing data for pie chart sectors. TissUUmaps "
-            "expects labels and numerical values for sectors to be separated by ':' "
-            "characters in the CSV column data."
-        ),
-    )
-    pie_dict: str = Field(
-        default="",
-        description=(
-            "JSON string specifying a custom dictionary for mapping pie chart sector "
-            "indices to colors. Example: "
-            "``\"{0: '#ff0000', 1: '#00ff00', 2: '#0000ff'}\"``. If no dictionary is "
-            "specified, TissUUmaps will use a default color palette instead."
-        ),
-    )
-    shape_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing a name or an index for marker shape."
-        ),
-    )
-    shape_fixed: str = Field(
-        default="cross",
-        description="Name or index of a single fixed shape to be used for all markers.",
-    )
-    shape_gr_dict: str = Field(
-        default="",
-        description=(
-            "JSON string specifying a custom dictionary for mapping group keys to "
-            "group shapes. Example: "
-            "``\"{'key1': 'square', 'key2': 'diamond', 'key3': 'triangle up'}\"``."
-        ),
-    )
-    edges_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing a name or an index for marker edges "
-            "in Network Diagram mode."
-        ),
-    )
-    collectionItem_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing a name or an index for marker collection "
-            "items in Collection mode."
-        ),
-    )
-    collectionItem_fixed: str = Field(
-        default="",
-        description=(
-            "Name or index of a single fixed collection item to be used for all "
-            "markers in Collection mode."
-        ),
-    )
-    opacity_col: Optional[str] = Field(
-        default=None,
-        description="Name of CSV column containing scalar values for opacities.",
-    )
-    opacity: float = Field(
-        default=1.0,
-        description=(
-            "Numerical value for a fixed opacity factor to be applied to markers."
-        ),
-    )
-    sortby_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing scalar values for sorting markers."
-        ),
-    )
-    z_order: float = Field(
-        default=1.0,
-        description=("Numerical value of z-order to be used for all markers."),
-    )
-    tooltip_fmt: str = Field(
-        default="",
-        description=(
-            "Custom formatting string used for displaying metadata about a selected "
-            "marker. See https://github.com/TissUUmaps/TissUUmaps/issues/2 for an "
-            "overview of the grammer and keywords. If no string is specified, "
-            "TissUUmaps will show default metadata depending on the context."
-        ),
-    )
+class ExpectedCSV(SchemaBaseModel):
+    x_col: str = Field(alias="X_col")  # TODO description
+    y_col: str = Field(alias="Y_col")  # TODO description
+    key: str  # TODO change to enum? optional, default, description
+    piechart: Optional[str] = None  # TODO description
+    color: Optional[str] = None  # TODO description
+    scale: Optional[str] = None  # TODO description
 
 
 class ExpectedRadios(SchemaBaseModel):
@@ -414,7 +286,7 @@ class MarkerFile(SchemaBaseModel):
             "dataset."
         ),
     )
-    expected_header: ExpectedHeader = Field(alias="expectedHeader")
+    expected_csv: ExpectedCSV = Field(alias="expectedCSV")
     expected_radios: ExpectedRadios = Field(
         default_factory=lambda: ExpectedRadios(), alias="expectedRadios"
     )
