@@ -6,8 +6,6 @@ from pydantic import ConfigDict, Field
 from ..base import SchemaBaseModel
 from .base import RootSchemaBaseModelV00
 
-# TODO remove v0.1 fields as appropriate
-
 
 class ColorScale(str, Enum):
     INTERPOLATE_CUBEHELIX_DEFAULT = "interpolateCubehelixDefault"
