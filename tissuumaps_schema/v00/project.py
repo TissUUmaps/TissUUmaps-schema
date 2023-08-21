@@ -162,6 +162,8 @@ class ExpectedCSV(SchemaBaseModel):
     x_col: str = Field(alias="X_col")  # TODO description
     y_col: str = Field(alias="Y_col")  # TODO description
     key: str  # TODO change to enum? optional, default, description
+    group: Optional[str] = None  # TODO description
+    name: Optional[str] = None  # TODO description
     piechart: Optional[str] = None  # TODO description
     color: Optional[str] = None  # TODO description
     scale: Optional[str] = None  # TODO description
