@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from typing import Any, ClassVar, Optional, Type, Union
 
@@ -581,19 +582,20 @@ class Project(RootSchemaBaseModelV01):
         for marker_file_data in project_data["markerFiles"]:
             assert isinstance(marker_file_data, dict)
             expected_csv_data: dict[str, Any] = marker_file_data.pop("expectedCSV")
-            expected_header_data = marker_file_data["expectedHeader"] = {
-                "X": expected_csv_data["X_col"],
-                "Y": expected_csv_data["Y_col"],
-            }
+            if "expectedHeader" not in marker_file_data:
+                marker_file_data["expectedHeader"] = {}
+            expected_header_data = marker_file_data["expectedHeader"]
+            if "expectedRadios" not in marker_file_data:
+                marker_file_data["expectedRadios"] = {}
+            expected_radios_data = marker_file_data["expectedRadios"]
+            expected_header_data["X"] = expected_csv_data["X_col"]
+            expected_header_data["Y"] = expected_csv_data["Y_col"]
             if expected_csv_data["key"] == "letters":  # TODO potentially change to enum
                 expected_header_data["gb_col"] = expected_csv_data.get("group", None)
                 expected_header_data["gb_name"] = expected_csv_data.get("name", None)
             else:
                 expected_header_data["gb_col"] = expected_csv_data.get("name", None)
                 expected_header_data["gb_name"] = expected_csv_data.get("group", None)
-            expected_radios_data = marker_file_data[
-                "expectedRadios"
-            ] = marker_file_data.get("expectedRadios", {})
             piechart_value = expected_csv_data.get("piechart")
             expected_radios_data["pie_check"] = bool(piechart_value)
             expected_header_data["pie_col"] = piechart_value or None
@@ -613,12 +615,20 @@ class Project(RootSchemaBaseModelV01):
                 function_value = setting_data["function"]
                 value_value = setting_data["value"]
                 if module_value == "markerUtils" and function_value == "_randomShape":
-                    shape_fixed_value = not value_value  # TODO
-                    expected_radios_data["shape_fixed"] = shape_fixed_value
-                    if not shape_fixed_value:
-                        expected_header_data["shape_fixed"] = None  # TODO
+                    assert isinstance(
+                        value_value, bool  # FIXME value cannot be bool!?
+                    ), "The `markerUtils._randomShape` setting value must be a bool"
+                    expected_radios_data["shape_fixed"] = not value_value
+                    if value_value:
+                        expected_header_data["shape_fixed"] = "square"
                 if module_value == "glUtils" and function_value == "_markerOpacity":
-                    function_value = setting_data["function"] = "_markerOpacityOld"
+                    try:
+                        value_value = float(value_value)
+                    except ValueError:
+                        raise AssertionError(
+                            "The `glUtils._markerOpacity` setting value must be a float"
+                        )
+                    setting_data["function"] = "_markerOpacityOld"
                     expected_header_data["opacity"] = value_value
                 if (
                     module_value == "markerUtils" and function_value == "_colorsperkey"
@@ -626,10 +636,19 @@ class Project(RootSchemaBaseModelV01):
                     module_value == "HTMLElementUtils"
                     and function_value in ("_colorsperiter", "_colorsperbarcode")
                 ):
+                    assert isinstance(value_value, str)
+                    try:
+                        json.loads(value_value)
+                    except json.JSONDecodeError:
+                        raise AssertionError(
+                            "The setting values of `markerUtils._colorsperkey`, "
+                            "`HTMLElementUtils._colorsperiter` and "
+                            "`HTMLElementUtils._colorsperbarcode` must be JSON strings"
+                        )
                     expected_radios_data["cb_gr"] = True
                     expected_radios_data["cb_gr_rand"] = False
                     expected_radios_data["cb_gr_key"] = False
                     expected_radios_data["cb_gr_dict"] = True
-                    expected_header_data["cb_gr_dict"] = None  # TODO
+                    expected_header_data["cb_gr_dict"] = value_value
             marker_file_data["hideSettings"] = True
         return Project.model_validate(project_data)
