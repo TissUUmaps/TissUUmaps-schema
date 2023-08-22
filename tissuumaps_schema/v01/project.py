@@ -579,41 +579,51 @@ class Project(RootSchemaBaseModelV01):
         project_data = previous_model_instance.model_dump(
             by_alias=True, exclude={"schema_version"}
         )
+        # upgrade markerFiles
         for marker_file_data in project_data["markerFiles"]:
             assert isinstance(marker_file_data, dict)
-            expected_csv_data: dict[str, Any] = marker_file_data.pop("expectedCSV")
+            old_expected_csv_data: dict[str, Any] = marker_file_data.pop("expectedCSV")
             if "expectedHeader" not in marker_file_data:
                 marker_file_data["expectedHeader"] = {}
             expected_header_data = marker_file_data["expectedHeader"]
             if "expectedRadios" not in marker_file_data:
                 marker_file_data["expectedRadios"] = {}
             expected_radios_data = marker_file_data["expectedRadios"]
-            expected_header_data["X"] = expected_csv_data["X_col"]
-            expected_header_data["Y"] = expected_csv_data["Y_col"]
-            if expected_csv_data["key"] == "letters":  # TODO potentially change to enum
-                expected_header_data["gb_col"] = expected_csv_data.get("group", None)
-                expected_header_data["gb_name"] = expected_csv_data.get("name", None)
+            # uid: "uniquetab" --> None
+            if marker_file_data.get("uid") == "uniquetab":
+                marker_file_data["uid"] = None
+            # infer name from title
+            title_value: str = marker_file_data["title"]
+            marker_file_data["name"] = title_value.replace("Download", "")
+            # hide settings by default
+            marker_file_data["hideSettings"] = True
+            # expectedCSV --> expectedHeader/expectedRadios
+            expected_header_data["X"] = old_expected_csv_data["X_col"]
+            expected_header_data["Y"] = old_expected_csv_data["Y_col"]
+            if old_expected_csv_data["key"] == "letters":  # TODO change to enum?
+                expected_header_data["gb_col"] = old_expected_csv_data.get("group")
+                expected_header_data["gb_name"] = old_expected_csv_data.get("name")
             else:
-                expected_header_data["gb_col"] = expected_csv_data.get("name", None)
-                expected_header_data["gb_name"] = expected_csv_data.get("group", None)
-            piechart_value = expected_csv_data.get("piechart")
+                expected_header_data["gb_col"] = old_expected_csv_data.get("name")
+                expected_header_data["gb_name"] = old_expected_csv_data.get("group")
+            piechart_value = old_expected_csv_data.get("piechart")
             expected_radios_data["pie_check"] = bool(piechart_value)
             expected_header_data["pie_col"] = piechart_value or None
-            color_value = expected_csv_data.get("color")
+            color_value = old_expected_csv_data.get("color")
             expected_radios_data["cb_gr"] = bool(color_value)
             expected_header_data["cb_col"] = color_value or None
             if color_value:
                 expected_radios_data["cb_col"] = True
-            scale_value = expected_csv_data.get("scale")
+            scale_value = old_expected_csv_data.get("scale")
             expected_radios_data["scale_check"] = bool(scale_value)
             expected_header_data["scale_col"] = scale_value or None
-            title_value: str = marker_file_data["title"]
-            marker_file_data["name"] = title_value.replace("Download", "")
+            # old settings --> expectedHeader/expectedRadios
             for setting_data in marker_file_data.get("settings", []):
                 assert isinstance(setting_data, dict)
                 module_value = setting_data["module"]
                 function_value = setting_data["function"]
                 value_value = setting_data["value"]
+                # marker shape
                 if module_value == "markerUtils" and function_value == "_randomShape":
                     assert isinstance(
                         value_value, bool  # FIXME value cannot be bool!?
@@ -621,6 +631,7 @@ class Project(RootSchemaBaseModelV01):
                     expected_radios_data["shape_fixed"] = not value_value
                     if value_value:
                         expected_header_data["shape_fixed"] = "square"
+                # marker opacity
                 if module_value == "glUtils" and function_value == "_markerOpacity":
                     try:
                         value_value = float(value_value)
@@ -630,6 +641,7 @@ class Project(RootSchemaBaseModelV01):
                         )
                     setting_data["function"] = "_markerOpacityOld"
                     expected_header_data["opacity"] = value_value
+                # marker color
                 if (
                     module_value == "markerUtils" and function_value == "_colorsperkey"
                 ) or (
@@ -650,5 +662,4 @@ class Project(RootSchemaBaseModelV01):
                     expected_radios_data["cb_gr_key"] = False
                     expected_radios_data["cb_gr_dict"] = True
                     expected_header_data["cb_gr_dict"] = value_value
-            marker_file_data["hideSettings"] = True
         return Project.model_validate(project_data)

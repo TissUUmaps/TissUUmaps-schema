@@ -279,8 +279,8 @@ class MarkerFile(SchemaBaseModel):
         alias="hideSettings",
         description="Hide markers' settings and add a toggle button instead.",
     )
-    uid: Optional[str] = Field(
-        default=None,
+    uid: str = Field(
+        default="uniquetab",
         description=(
             "A unique identifier used internally by TissUUmaps to reference the marker "
             "dataset."
