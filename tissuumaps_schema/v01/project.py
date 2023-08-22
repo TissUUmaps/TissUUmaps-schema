@@ -594,7 +594,7 @@ class Project(RootSchemaBaseModelV01):
                 marker_file_data["uid"] = None
             # infer name from title
             title_value: str = marker_file_data["title"]
-            marker_file_data["name"] = title_value.replace("Download", "")
+            marker_file_data["name"] = title_value.replace("Download", "").strip()
             # hide settings by default
             marker_file_data["hideSettings"] = True
             # expectedCSV --> expectedHeader/expectedRadios
