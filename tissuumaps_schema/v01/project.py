@@ -600,7 +600,7 @@ class Project(RootSchemaBaseModelV01):
             # expectedCSV --> expectedHeader/expectedRadios
             expected_header_data["X"] = old_expected_csv_data["X_col"]
             expected_header_data["Y"] = old_expected_csv_data["Y_col"]
-            if old_expected_csv_data["key"] == "letters":  # TODO change to enum?
+            if old_expected_csv_data["key"] == "letters":
                 expected_header_data["gb_col"] = old_expected_csv_data.get("group")
                 expected_header_data["gb_name"] = old_expected_csv_data.get("name")
             else:
@@ -628,7 +628,7 @@ class Project(RootSchemaBaseModelV01):
                 # marker shape
                 if module_value == "markerUtils" and function_value == "_randomShape":
                     assert isinstance(
-                        value_value, bool  # FIXME value cannot be bool!?
+                        value_value, bool
                     ), "The `markerUtils._randomShape` setting value must be a bool"
                     expected_radios_data["shape_fixed"] = not value_value
                     if value_value:
