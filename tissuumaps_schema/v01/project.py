@@ -259,8 +259,8 @@ class ExpectedHeader(SchemaBaseModel):
             "items in Collection mode."
         ),
     )
-    collectionItem_fixed: str = Field(
-        default="",
+    collectionItem_fixed: Union[str, int] = Field(
+        default=0,
         description=(
             "Name or index of a single fixed collection item to be used for all "
             "markers in Collection mode."
