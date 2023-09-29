@@ -609,11 +609,13 @@ class Project(RootSchemaBaseModelV01):
             piechart_value = old_expected_csv_data.get("piechart")
             expected_radios_data["pie_check"] = bool(piechart_value)
             expected_header_data["pie_col"] = piechart_value or None
+            
             color_value = old_expected_csv_data.get("color")
-            expected_radios_data["cb_gr"] = bool(color_value)
+            expected_radios_data["cb_gr"] = not bool(color_value)
+            expected_radios_data["cb_col"] = bool(color_value)
             expected_header_data["cb_col"] = color_value or None
-            if color_value:
-                expected_radios_data["cb_col"] = True
+
+
             scale_value = old_expected_csv_data.get("scale")
             expected_radios_data["scale_check"] = bool(scale_value)
             expected_header_data["scale_col"] = scale_value or None
