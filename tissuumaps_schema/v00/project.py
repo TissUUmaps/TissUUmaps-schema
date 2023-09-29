@@ -1,12 +1,10 @@
-import json
 from enum import Enum
-from typing import Any, ClassVar, Optional, Type, Union
+from typing import Any, Optional, Union
 
 from pydantic import ConfigDict, Field
 
-from ..base import RootSchemaBaseModel, SchemaBaseModel
-from ..v00 import Project as ProjectV00
-from .base import RootSchemaBaseModelV01
+from ..base import SchemaBaseModel
+from .base import RootSchemaBaseModelV00
 
 
 class ColorScale(str, Enum):
@@ -160,141 +158,15 @@ class Setting(SchemaBaseModel):
     value: Any
 
 
-class ExpectedHeader(SchemaBaseModel):
-    x: str = Field(alias="X", description="Name of CSV column to use as X-coordinate.")
-    y: str = Field(alias="Y", description="Name of CSV column to use as Y-coordinate.")
-    gb_col: Optional[str] = Field(
-        default=None,
-        description="Name of CSV column to use as key to group markers by.",
-    )
-    gb_name: Optional[str] = Field(
-        default=None,
-        description="Name of CSV column to display for groups instead of group key.",
-    )
-    cb_cmap: Optional[str] = Field(
-        default=None,
-        description="Name of D3 color scale to be used for color mapping.",
-    )
-    cb_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing scalar values for color mapping or "
-            "hexadecimal RGB colors in format '#ff0000'."
-        ),
-    )
-    cb_gr_dict: str = Field(
-        default="",
-        description=(
-            "JSON string specifying a custom dictionary for mapping group keys to "
-            "group colors. Example: "
-            "``\"{'key1': '#ff0000', 'key2': '#00ff00', 'key3': '#0000ff'}\"``."
-        ),
-    )
-    scale_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing scalar values for changing the size of "
-            "markers."
-        ),
-    )
-    scale_factor: float = Field(
-        default=1.0,
-        description=(
-            "Numerical value for a fixed scale factor to be applied to markers."
-        ),
-    )
-    coord_factor: float = Field(
-        default=1.0,
-        description=(
-            "Numerical value for a fixed scale factor to be applied to marker "
-            "coordinates."
-        ),
-    )
-    pie_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing data for pie chart sectors. TissUUmaps "
-            "expects labels and numerical values for sectors to be separated by ':' "
-            "characters in the CSV column data."
-        ),
-    )
-    pie_dict: str = Field(
-        default="",
-        description=(
-            "JSON string specifying a custom dictionary for mapping pie chart sector "
-            "indices to colors. Example: "
-            "``\"{0: '#ff0000', 1: '#00ff00', 2: '#0000ff'}\"``. If no dictionary is "
-            "specified, TissUUmaps will use a default color palette instead."
-        ),
-    )
-    shape_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing a name or an index for marker shape."
-        ),
-    )
-    shape_fixed: str = Field(
-        default="cross",
-        description="Name or index of a single fixed shape to be used for all markers.",
-    )
-    shape_gr_dict: str = Field(
-        default="",
-        description=(
-            "JSON string specifying a custom dictionary for mapping group keys to "
-            "group shapes. Example: "
-            "``\"{'key1': 'square', 'key2': 'diamond', 'key3': 'triangle up'}\"``."
-        ),
-    )
-    edges_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing a name or an index for marker edges "
-            "in Network Diagram mode."
-        ),
-    )
-    collectionItem_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing a name or an index for marker collection "
-            "items in Collection mode."
-        ),
-    )
-    collectionItem_fixed: Union[str, int] = Field(
-        default=0,
-        description=(
-            "Name or index of a single fixed collection item to be used for all "
-            "markers in Collection mode."
-        ),
-    )
-    opacity_col: Optional[str] = Field(
-        default=None,
-        description="Name of CSV column containing scalar values for opacities.",
-    )
-    opacity: float = Field(
-        default=1.0,
-        description=(
-            "Numerical value for a fixed opacity factor to be applied to markers."
-        ),
-    )
-    sortby_col: Optional[str] = Field(
-        default=None,
-        description=(
-            "Name of CSV column containing scalar values for sorting markers."
-        ),
-    )
-    z_order: float = Field(
-        default=1.0,
-        description=("Numerical value of z-order to be used for all markers."),
-    )
-    tooltip_fmt: str = Field(
-        default="",
-        description=(
-            "Custom formatting string used for displaying metadata about a selected "
-            "marker. See https://github.com/TissUUmaps/TissUUmaps/issues/2 for an "
-            "overview of the grammer and keywords. If no string is specified, "
-            "TissUUmaps will show default metadata depending on the context."
-        ),
-    )
+class ExpectedCSV(SchemaBaseModel):
+    x_col: str = Field(alias="X_col")
+    y_col: str = Field(alias="Y_col")
+    key: str = "letters"
+    group: Optional[str] = None
+    name: Optional[str] = None
+    piechart: Optional[str] = None
+    color: Optional[str] = None
+    scale: Optional[str] = None
 
 
 class ExpectedRadios(SchemaBaseModel):
@@ -407,14 +279,14 @@ class MarkerFile(SchemaBaseModel):
         alias="hideSettings",
         description="Hide markers' settings and add a toggle button instead.",
     )
-    uid: Optional[str] = Field(
-        default=None,
+    uid: str = Field(
+        default="uniquetab",
         description=(
             "A unique identifier used internally by TissUUmaps to reference the marker "
             "dataset."
         ),
     )
-    expected_header: ExpectedHeader = Field(alias="expectedHeader")
+    expected_csv: ExpectedCSV = Field(alias="expectedCSV")
     expected_radios: ExpectedRadios = Field(
         default_factory=lambda: ExpectedRadios(), alias="expectedRadios"
     )
@@ -467,8 +339,7 @@ class RegionFile(SchemaBaseModel):
     settings: list[Setting] = []
 
 
-class Project(RootSchemaBaseModelV01):
-    _previous_model_type: ClassVar[Optional[Type[RootSchemaBaseModel]]] = ProjectV00
+class Project(RootSchemaBaseModelV00):
     filename: Optional[str] = Field(default=None, description="Name of the project.")
     link: Optional[str] = Field(
         default=None,
@@ -570,97 +441,3 @@ class Project(RootSchemaBaseModelV01):
         description="Background color of the viewer.",
     )
     settings: list[Setting] = []
-
-    @classmethod
-    def _upgrade_previous(
-        cls, previous_model_instance: RootSchemaBaseModel
-    ) -> "Project":
-        assert isinstance(previous_model_instance, ProjectV00)
-        project_data = previous_model_instance.model_dump(
-            by_alias=True, exclude={"schema_version"}
-        )
-        # upgrade markerFiles
-        for marker_file_data in project_data["markerFiles"]:
-            assert isinstance(marker_file_data, dict)
-            old_expected_csv_data: dict[str, Any] = marker_file_data.pop("expectedCSV")
-            if "expectedHeader" not in marker_file_data:
-                marker_file_data["expectedHeader"] = {}
-            expected_header_data = marker_file_data["expectedHeader"]
-            if "expectedRadios" not in marker_file_data:
-                marker_file_data["expectedRadios"] = {}
-            expected_radios_data = marker_file_data["expectedRadios"]
-            # uid: "uniquetab" --> None
-            if marker_file_data.get("uid") == "uniquetab":
-                marker_file_data["uid"] = None
-            # infer name from title
-            title_value: str = marker_file_data["title"]
-            marker_file_data["name"] = title_value.replace("Download", "").strip()
-            # hide settings by default
-            marker_file_data["hideSettings"] = True
-            # expectedCSV --> expectedHeader/expectedRadios
-            expected_header_data["X"] = old_expected_csv_data["X_col"]
-            expected_header_data["Y"] = old_expected_csv_data["Y_col"]
-            if old_expected_csv_data["key"] == "letters":
-                expected_header_data["gb_col"] = old_expected_csv_data.get("group")
-                expected_header_data["gb_name"] = old_expected_csv_data.get("name")
-            else:
-                expected_header_data["gb_col"] = old_expected_csv_data.get("name")
-                expected_header_data["gb_name"] = old_expected_csv_data.get("group")
-            piechart_value = old_expected_csv_data.get("piechart")
-            expected_radios_data["pie_check"] = bool(piechart_value)
-            expected_header_data["pie_col"] = piechart_value or None
-
-            color_value = old_expected_csv_data.get("color")
-            expected_radios_data["cb_gr"] = not bool(color_value)
-            expected_radios_data["cb_col"] = bool(color_value)
-            expected_header_data["cb_col"] = color_value or None
-
-            scale_value = old_expected_csv_data.get("scale")
-            expected_radios_data["scale_check"] = bool(scale_value)
-            expected_header_data["scale_col"] = scale_value or None
-            # old settings --> expectedHeader/expectedRadios
-            for setting_data in marker_file_data.get("settings", []):
-                assert isinstance(setting_data, dict)
-                module_value = setting_data["module"]
-                function_value = setting_data["function"]
-                value_value = setting_data["value"]
-                # marker shape
-                if module_value == "markerUtils" and function_value == "_randomShape":
-                    assert isinstance(
-                        value_value, bool
-                    ), "The `markerUtils._randomShape` setting value must be a bool"
-                    expected_radios_data["shape_fixed"] = not value_value
-                    if value_value:
-                        expected_header_data["shape_fixed"] = "square"
-                # marker opacity
-                if module_value == "glUtils" and function_value == "_markerOpacity":
-                    try:
-                        value_value = float(value_value)
-                    except ValueError:
-                        raise AssertionError(
-                            "The `glUtils._markerOpacity` setting value must be a float"
-                        )
-                    setting_data["function"] = "_markerOpacityOld"
-                    expected_header_data["opacity"] = value_value
-                # marker color
-                if (
-                    module_value == "markerUtils" and function_value == "_colorsperkey"
-                ) or (
-                    module_value == "HTMLElementUtils"
-                    and function_value in ("_colorsperiter", "_colorsperbarcode")
-                ):
-                    assert isinstance(value_value, str)
-                    try:
-                        json.loads(value_value)
-                    except json.JSONDecodeError:
-                        raise AssertionError(
-                            "The setting values of `markerUtils._colorsperkey`, "
-                            "`HTMLElementUtils._colorsperiter` and "
-                            "`HTMLElementUtils._colorsperbarcode` must be JSON strings"
-                        )
-                    expected_radios_data["cb_gr"] = True
-                    expected_radios_data["cb_gr_rand"] = False
-                    expected_radios_data["cb_gr_key"] = False
-                    expected_radios_data["cb_gr_dict"] = True
-                    expected_header_data["cb_gr_dict"] = value_value
-        return Project.model_validate(project_data)

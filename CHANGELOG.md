@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v0.1.1](https://github.com/TissUUmaps/TissUUmaps-schema/compare/v0.1.0...v0.1.1)
 
+Fix class hierarchy
+
+Fix `upgrade` command
+
+Fix version inference in `validate` command
+
 Add support for schema version 0.0 ("expectedCSV" format of an EOL TissUUmaps version)
 
 
