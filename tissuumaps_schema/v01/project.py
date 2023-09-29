@@ -157,7 +157,7 @@ class BoundingBox(SchemaBaseModel):
 class Setting(SchemaBaseModel):
     module: str = Field(description="Module where the function or property lies.")
     function: str = Field(description="Function or property of the given module.")
-    value: Union[int, float]
+    value: Any
 
 
 class ExpectedHeader(SchemaBaseModel):
