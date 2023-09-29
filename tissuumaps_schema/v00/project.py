@@ -157,6 +157,7 @@ class Setting(SchemaBaseModel):
     function: str = Field(description="Function or property of the given module.")
     value: Any
 
+
 class ExpectedCSV(SchemaBaseModel):
     x_col: str = Field(alias="X_col")
     y_col: str = Field(alias="Y_col")
