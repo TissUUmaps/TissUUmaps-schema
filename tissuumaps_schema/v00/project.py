@@ -227,7 +227,7 @@ class ExpectedRadios(SchemaBaseModel):
         ),
     )
     collectionItem_fixed: bool = Field(
-        default=False,
+        default=True,
         description=(
             "If a single fixed collection item should be used for all markers."
         ),
