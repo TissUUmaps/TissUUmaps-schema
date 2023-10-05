@@ -1,4 +1,5 @@
-from .utils import SCHEMA_MODULES, guess_schema_version
-from .utils import current_schema_module as current
+from .utils import CURRENT_SCHEMA_MODULE, SCHEMA_MODULES, guess_schema_version
+
+current = CURRENT_SCHEMA_MODULE
 
 __all__ = ["current", "guess_schema_version", "SCHEMA_MODULES"]
