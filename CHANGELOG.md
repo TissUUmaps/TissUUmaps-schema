@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.0.2](https://github.com/TissUUmaps/TissUUmaps-schema/compare/v1.0.1...v1.0.2)
 
+### Changed
+- Renamed tissuumaps_schema.utils.current_schema_module to tissuumaps_schema.utils.CURRENT_SCHEMA_MODULE
+
 ### Added
-- Exported some additional functionality via utils
+- Exported tissuumaps_schema.utils.CURRENT_SCHEMA_MODULE as tissuumaps_schema.current
+- Exported some additional functionality (e.g. get_major_version) via tissuumaps_schema.utils
 
 
 ## [v1.0.1](https://github.com/TissUUmaps/TissUUmaps-schema/compare/v1.0.0...v1.0.1)
