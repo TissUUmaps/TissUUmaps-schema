@@ -5,29 +5,13 @@ from typing import Optional, TextIO
 import click
 
 from .base import RootSchemaBaseModel
-from .utils import SCHEMA_MODULES, current_schema_module, guess_schema_version
-
-
-def _major_version(version: str) -> str:
-    return version.split(".")[0]
-
-
-def _remove_json_schema_titles_inplace(*args) -> None:
-    for arg in args:
-        if isinstance(arg, dict):
-            arg.pop("title", None)
-            _remove_json_schema_titles_inplace(*arg.values())
-        elif isinstance(arg, list):
-            _remove_json_schema_titles_inplace(*arg)
-
-
-MAJOR_SCHEMA_VERSIONS = sorted(
-    _major_version(schema_module.VERSION) for schema_module in SCHEMA_MODULES
+from .utils import (
+    CURRENT_SCHEMA_MODULE,
+    MAJOR_SCHEMA_VERSION_MODULES,
+    MAJOR_SCHEMA_VERSIONS,
+    get_major_version,
+    guess_schema_version,
 )
-MAJOR_SCHEMA_VERSION_MODULES = {
-    _major_version(schema_module.VERSION): schema_module
-    for schema_module in SCHEMA_MODULES
-}
 
 
 @click.group()
@@ -47,7 +31,7 @@ def versions() -> None:
     "--version",
     "major_schema_version",
     type=click.Choice(MAJOR_SCHEMA_VERSIONS),
-    default=_major_version(current_schema_module.VERSION),
+    default=get_major_version(CURRENT_SCHEMA_MODULE.VERSION),
     show_default=True,
     help="Major schema version.",
 )
@@ -65,7 +49,7 @@ def models(major_schema_version: str) -> None:
     "--version",
     "major_schema_version",
     type=click.Choice(MAJOR_SCHEMA_VERSIONS),
-    default=_major_version(current_schema_module.VERSION),
+    default=get_major_version(CURRENT_SCHEMA_MODULE.VERSION),
     show_default=True,
     help="Major schema version.",
 )
@@ -121,7 +105,7 @@ def generate(
     "--to-version",
     "to_major_schema_version",
     type=click.Choice(MAJOR_SCHEMA_VERSIONS),
-    default=_major_version(current_schema_module.VERSION),
+    default=get_major_version(CURRENT_SCHEMA_MODULE.VERSION),
     show_default=True,
     help="Major schema version to upgrade to.",
 )
@@ -160,7 +144,7 @@ def upgrade(
 ) -> None:
     model_data = json.load(model_instance_file)
     if from_major_schema_version is None:
-        from_major_schema_version = _major_version(guess_schema_version(model_data))
+        from_major_schema_version = get_major_version(guess_schema_version(model_data))
     from_schema_module = MAJOR_SCHEMA_VERSION_MODULES[from_major_schema_version]
     from_model_type = getattr(from_schema_module, model_type_name, None)
     if from_model_type is None or not issubclass(from_model_type, RootSchemaBaseModel):
@@ -220,7 +204,7 @@ def validate(
 ) -> None:
     model_data = json.load(model_instance_file)
     if major_schema_version is None:
-        major_schema_version = _major_version(guess_schema_version(model_data))
+        major_schema_version = get_major_version(guess_schema_version(model_data))
     schema_module = MAJOR_SCHEMA_VERSION_MODULES[major_schema_version]
     model_type = getattr(schema_module, model_type_name, None)
     if model_type is None or not issubclass(model_type, RootSchemaBaseModel):
@@ -235,3 +219,12 @@ def validate(
             f"'{model_type_name}' not in {root_model_type_names}", param_hint="MODEL"
         )
     model_type.parse(model_data, strict=strict)
+
+
+def _remove_json_schema_titles_inplace(*args) -> None:
+    for arg in args:
+        if isinstance(arg, dict):
+            arg.pop("title", None)
+            _remove_json_schema_titles_inplace(*arg.values())
+        elif isinstance(arg, list):
+            _remove_json_schema_titles_inplace(*arg)
