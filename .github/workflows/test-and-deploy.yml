@@ -6,6 +6,9 @@ on:
   pull_request:
     branches:
       - main
+  release:
+    types:
+      - released
   workflow_dispatch:
 jobs:
   pytest:
