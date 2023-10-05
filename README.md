@@ -62,6 +62,14 @@ For major changes, please open an issue first to discuss what you would like to 
 
 Please make sure to update tests as appropriate.
 
+### Versioning
+
+Both the schema and the associated Python package adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
+- Each file adhering to the schema contains the full MAJOR.MINOR.PATCH schema version it was created with/for (see `RootSchemaBaseModel.schema_version` and `<schema_module>.VERSION`).
+- Briefly, changes in MAJOR indicate breaking changes necessitating file upgrade/conversion, changes in MINOR indicate non-breaking feature additions, and changes in PATCH indicate schema bugfixes.
+- The Python package version equals the full version of the latest schema supported by the package. Each TissUUmaps release pins the MAJOR.MINOR version of the tissuumaps-schema package to indicate the supported schema version.
+- For each MAJOR version, the Python package contains a dedicated module with the latest MINOR.PATCH subversion of the schema. Upgrade paths exist from one MAJOR version (latest subversion) to the next MAJOR version (latest subversion).
+
 ## Changelog
 
 [Changelog](https://github.com/TissUUmaps/TissUUmaps-schema/blob/main/CHANGELOG.md)
