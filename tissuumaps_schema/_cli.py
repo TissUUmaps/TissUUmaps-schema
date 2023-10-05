@@ -8,8 +8,8 @@ from .base import RootSchemaBaseModel
 from .utils import SCHEMA_MODULES, current_schema_module, guess_schema_version
 
 
-def _major_version(version: str):
-    return int(version.split(".")[0])
+def _major_version(version: str) -> str:
+    return version.split(".")[0]
 
 
 def _remove_json_schema_titles_inplace(*args) -> None:
