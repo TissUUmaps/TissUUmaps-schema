@@ -278,7 +278,7 @@ class ExpectedHeader(SchemaBaseModel):
     )
     stroke_width: float = Field(
         default=2.5,
-        description=("Numerical value for the marker stroke width."),
+        description="Numerical value for the marker stroke width.",
     )
     sortby_col: Optional[str] = Field(
         default=None,
@@ -288,7 +288,7 @@ class ExpectedHeader(SchemaBaseModel):
     )
     z_order: float = Field(
         default=1.0,
-        description=("Numerical value of z-order to be used for all markers."),
+        description="Numerical value of z-order to be used for all markers.",
     )
     tooltip_fmt: str = Field(
         default="",
