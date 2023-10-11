@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.1.0](https://github.com/TissUUmaps/TissUUmaps-schema/compare/v1.0.2...v1.1.0)
 
 ### Added
-- New field `ExpectedHeader.strock_width`
+- New field `ExpectedHeader.stroke_width`
 - New field: `ExpectedRadios.no_fill`
 
 ### Fixed
