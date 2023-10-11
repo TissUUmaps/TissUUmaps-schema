@@ -278,9 +278,7 @@ class ExpectedHeader(SchemaBaseModel):
     )
     stroke_width: float = Field(
         default=2.5,
-        description=(
-            "Numerical value for the marker stroke width."
-        ),
+        description=("Numerical value for the marker stroke width."),
     )
     sortby_col: Optional[str] = Field(
         default=None,
