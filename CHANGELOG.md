@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Changed
-- Renamed field `_no_outline` to `no_outline` (in JSON)
 
 ### Removed
 
