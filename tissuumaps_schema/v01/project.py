@@ -276,6 +276,12 @@ class ExpectedHeader(SchemaBaseModel):
             "Numerical value for a fixed opacity factor to be applied to markers."
         ),
     )
+    stroke_width: float = Field(
+        default=2.5,
+        description=(
+            "Numerical value for the marker stroke width."
+        ),
+    )
     sortby_col: Optional[str] = Field(
         default=None,
         description=(
@@ -345,8 +351,13 @@ class ExpectedRadios(SchemaBaseModel):
     )
     no_outline: bool = Field(
         default=False,
-        alias="_no_outline",
+        alias="no_outline",
         description="If marker shapes should be rendered without outline.",
+    )
+    no_fill: bool = Field(
+        default=False,
+        alias="no_fill",
+        description="If marker shapes should be rendered without filling.",
     )
     collectionItem_col: bool = Field(
         default=False,
