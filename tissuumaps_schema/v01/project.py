@@ -349,12 +349,10 @@ class ExpectedRadios(SchemaBaseModel):
     )
     no_outline: bool = Field(
         default=False,
-        alias="no_outline",
         description="If marker shapes should be rendered without outline.",
     )
     no_fill: bool = Field(
         default=False,
-        alias="no_fill",
         description="If marker shapes should be rendered without filling.",
     )
     collectionItem_col: bool = Field(
