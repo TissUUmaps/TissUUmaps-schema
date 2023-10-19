@@ -93,6 +93,8 @@ class Filter(str, Enum):
     THRESHOLD = "Threshold"
     EROSION = "Erosion"
     DILATION = "Dilation"
+    SPLIT_CHANNEL = "SplitChannel"
+    COLORMAP = "Colormap"
 
 
 class Shape(str, Enum):
