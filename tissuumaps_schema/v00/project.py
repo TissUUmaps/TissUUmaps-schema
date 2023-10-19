@@ -447,6 +447,6 @@ class Project(RootSchemaBaseModelV00):
     menu_buttons: Optional[list[menuButton]] = Field(
         default=None,
         alias="menuButtons",
-        description="List of menu items to be added to the menu bar.",        
+        description="List of menu items to be added to the menu bar.",
     )
     settings: list[Setting] = []
