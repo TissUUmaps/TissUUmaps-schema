@@ -395,6 +395,11 @@ class DropdownOption(SchemaBaseModel):
     )
 
 
+class menuButton(SchemaBaseModel):
+    text: str = Field(description="Text of the menu item.")
+    url: str = Field(description="Url of the menu item.")
+
+
 class MarkerFile(SchemaBaseModel):
     title: str = Field(description="Name of marker button.")
     comment: Optional[str] = Field(
@@ -578,6 +583,11 @@ class Project(RootSchemaBaseModelV01):
         default=None,
         alias="backgroundColor",
         description="Background color of the viewer.",
+    )
+    menu_buttons: Optional[list[menuButton]] = Field(
+        default=None,
+        alias="menuButtons",
+        description="List of menu items to be added to the menu bar.",        
     )
     settings: list[Setting] = []
 
