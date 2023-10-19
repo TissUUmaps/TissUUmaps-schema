@@ -3,8 +3,7 @@ from typing import Any, Optional, Union
 
 from pydantic import ConfigDict, Field
 
-from ..base import SchemaBaseModel
-from .base import RootSchemaBaseModelV00
+from .base import RootSchemaBaseModelV00, SchemaBaseModelV00
 
 
 class ColorScale(str, Enum):
@@ -110,7 +109,7 @@ class Shape(str, Enum):
     ARROW = "arrow"
 
 
-class Layer(SchemaBaseModel):
+class Layer(SchemaBaseModelV00):
     name: str = Field(description="Name of the image layer")
     tile_source: str = Field(
         alias="tileSource",
@@ -132,12 +131,12 @@ class Layer(SchemaBaseModel):
     scale: Optional[float] = Field(default=None, description="Scale of the image.")
 
 
-class LayerFilter(SchemaBaseModel):
+class LayerFilter(SchemaBaseModelV00):
     name: Filter = Field(description="Filter name.")
     value: str = Field(description="Filter parameter.")
 
 
-class BoundingBox(SchemaBaseModel):
+class BoundingBox(SchemaBaseModelV00):
     x: float = Field(
         description="Left coordinate of the bounding box in viewport coordinate."
     )
@@ -152,13 +151,13 @@ class BoundingBox(SchemaBaseModel):
     )
 
 
-class Setting(SchemaBaseModel):
+class Setting(SchemaBaseModelV00):
     module: str = Field(description="Module where the function or property lies.")
     function: str = Field(description="Function or property of the given module.")
     value: Any
 
 
-class ExpectedCSV(SchemaBaseModel):
+class ExpectedCSV(SchemaBaseModelV00):
     x_col: str = Field(alias="X_col")
     y_col: str = Field(alias="Y_col")
     key: str = "letters"
@@ -169,7 +168,7 @@ class ExpectedCSV(SchemaBaseModel):
     scale: Optional[str] = None
 
 
-class ExpectedRadios(SchemaBaseModel):
+class ExpectedRadios(SchemaBaseModelV00):
     cb_col: bool = Field(
         default=False,
         description="If markers should be colored by data in CSV column.",
@@ -246,7 +245,7 @@ class ExpectedRadios(SchemaBaseModel):
     )
 
 
-class DropdownOption(SchemaBaseModel):
+class DropdownOption(SchemaBaseModelV00):
     # We use extra="allow" here because we want to allow extra keys in the config
     # dictionary. This is because we want to allow the user to add custom keys to the
     # dropdown options, e.g. "expectedHeader.cb_col".
@@ -257,7 +256,7 @@ class DropdownOption(SchemaBaseModel):
     )
 
 
-class MarkerFile(SchemaBaseModel):
+class MarkerFile(SchemaBaseModelV00):
     title: str = Field(description="Name of marker button.")
     comment: Optional[str] = Field(
         default=None,
@@ -315,7 +314,7 @@ class MarkerFile(SchemaBaseModel):
     )
 
 
-class RegionFile(SchemaBaseModel):
+class RegionFile(SchemaBaseModelV00):
     title: str = Field(description="Name of region button.")
     comment: Optional[str] = Field(
         default=None,
