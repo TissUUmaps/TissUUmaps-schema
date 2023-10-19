@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.1](https://github.com/TissUUmaps/TissUUmaps-schema/compare/v1.1.0...v1.1.1)
+
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+
 ## [v1.1.0](https://github.com/TissUUmaps/TissUUmaps-schema/compare/v1.0.2...v1.1.0)
 
 ### Added
@@ -20,21 +31,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.0.2](https://github.com/TissUUmaps/TissUUmaps-schema/compare/v1.0.1...v1.0.2)
 
-### Changed
-- Renamed tissuumaps_schema.utils.current_schema_module to tissuumaps_schema.utils.CURRENT_SCHEMA_MODULE
-
 ### Added
 - Exported tissuumaps_schema.utils.CURRENT_SCHEMA_MODULE as tissuumaps_schema.current
 - Exported some additional functionality (e.g. get_major_version) via tissuumaps_schema.utils
 
+### Fixed
+
+### Changed
+- Renamed tissuumaps_schema.utils.current_schema_module to tissuumaps_schema.utils.CURRENT_SCHEMA_MODULE
+
+### Removed
+
 
 ## [v1.0.1](https://github.com/TissUUmaps/TissUUmaps-schema/compare/v1.0.0...v1.0.1)
+
+### Added
 
 ### Fixed
 - Bug in `models` command
 
 ### Changed
 - Versioning scheme: PATCH indicates Python package bugfixes (removed PATCH from schema versioning)
+
+### Removed
 
 
 ## [v1.0.0](https://github.com/TissUUmaps/TissUUmaps-schema/compare/v0.1.0...v1.0.0)
