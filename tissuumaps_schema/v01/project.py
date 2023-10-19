@@ -611,9 +611,9 @@ class Project(RootSchemaBaseModelV01):
             if "expectedRadios" not in marker_file_data:
                 marker_file_data["expectedRadios"] = {}
             expected_radios_data = marker_file_data["expectedRadios"]
-            # uid: "uniquetab" --> None
-            if marker_file_data.get("uid") == "uniquetab":
-                marker_file_data["uid"] = None
+            # uid: None --> "uniquetab"
+            if marker_file_data.get("uid") is None:
+                marker_file_data["uid"] = "uniquetab"
             # infer name from title
             title_value: str = marker_file_data["title"]
             marker_file_data["name"] = title_value.replace("Download", "").strip()
