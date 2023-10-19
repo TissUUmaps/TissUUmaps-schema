@@ -184,7 +184,7 @@ class ExpectedHeader(SchemaBaseModel):
             "hexadecimal RGB colors in format '#ff0000'."
         ),
     )
-    cb_gr_dict: Union[str, dict[str, Any]] = Field(
+    cb_gr_dict: Union[str, dict[str, Any], list[str]] = Field(
         default="",
         description=(
             "JSON string specifying a custom dictionary for mapping group keys to "
@@ -220,7 +220,7 @@ class ExpectedHeader(SchemaBaseModel):
             "characters in the CSV column data."
         ),
     )
-    pie_dict: Union[str, dict[str, Any]] = Field(
+    pie_dict: Union[str, dict[str, Any], list[str]] = Field(
         default="",
         description=(
             "JSON string specifying a custom dictionary for mapping pie chart sector "
@@ -239,7 +239,7 @@ class ExpectedHeader(SchemaBaseModel):
         default="cross",
         description="Name or index of a single fixed shape to be used for all markers.",
     )
-    shape_gr_dict: Union[str, dict[str, Any]] = Field(
+    shape_gr_dict: Union[str, dict[str, Any], list[str]] = Field(
         default="",
         description=(
             "JSON string specifying a custom dictionary for mapping group keys to "
