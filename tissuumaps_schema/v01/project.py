@@ -114,6 +114,17 @@ class Shape(str, Enum):
     ARROW = "arrow"
 
 
+class LayerClip(SchemaBaseModel):
+    x: float = Field(
+        description="Left coordinate of the clip in image pixel coordinate."
+    )
+    y: float = Field(
+        description="Top coordinate of the clip in image pixel coordinate."
+    )
+    w: float = Field(description="Width of the clip in image pixel coordinate.")
+    h: float = Field(description="Height of the clip in image pixel coordinate.")
+
+
 class Layer(SchemaBaseModel):
     name: str = Field(description="Name of the image layer")
     tile_source: str = Field(
@@ -134,6 +145,13 @@ class Layer(SchemaBaseModel):
         description="Flip the image horizontally.",
     )
     scale: Optional[float] = Field(default=None, description="Scale of the image.")
+    clip: Optional[LayerClip] = Field(
+        default=None,
+        description=(
+            "Bounding box used to clip image in image pixel coordinate. If not "
+            "specified, the whole image is shown."
+        ),
+    )
 
 
 class LayerFilter(SchemaBaseModel):
