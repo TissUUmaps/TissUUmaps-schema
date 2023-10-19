@@ -257,7 +257,9 @@ class DropdownOption(SchemaBaseModelV00):
 
 
 class menuButton(SchemaBaseModelV00):
-    text: str = Field(description="Text of the menu item.")
+    text: Union[list[str], str] = Field(
+        description=("Text of the menu item. If list, then a nested menu is created.")
+    )
     url: str = Field(description="Url of the menu item.")
 
 
