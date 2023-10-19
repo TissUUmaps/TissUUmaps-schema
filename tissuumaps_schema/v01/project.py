@@ -182,7 +182,7 @@ class ExpectedHeader(SchemaBaseModel):
             "hexadecimal RGB colors in format '#ff0000'."
         ),
     )
-    cb_gr_dict: str = Field(
+    cb_gr_dict: Union[str, dict[str, Any]] = Field(
         default="",
         description=(
             "JSON string specifying a custom dictionary for mapping group keys to "
@@ -218,7 +218,7 @@ class ExpectedHeader(SchemaBaseModel):
             "characters in the CSV column data."
         ),
     )
-    pie_dict: str = Field(
+    pie_dict: Union[str, dict[str, Any]] = Field(
         default="",
         description=(
             "JSON string specifying a custom dictionary for mapping pie chart sector "
@@ -237,7 +237,7 @@ class ExpectedHeader(SchemaBaseModel):
         default="cross",
         description="Name or index of a single fixed shape to be used for all markers.",
     )
-    shape_gr_dict: str = Field(
+    shape_gr_dict: Union[str, dict[str, Any]] = Field(
         default="",
         description=(
             "JSON string specifying a custom dictionary for mapping group keys to "
@@ -657,15 +657,17 @@ class Project(RootSchemaBaseModelV01):
                     module_value == "HTMLElementUtils"
                     and function_value in ("_colorsperiter", "_colorsperbarcode")
                 ):
-                    assert isinstance(value_value, str)
-                    try:
-                        json.loads(value_value)
-                    except json.JSONDecodeError:
-                        raise AssertionError(
-                            "The setting values of `markerUtils._colorsperkey`, "
-                            "`HTMLElementUtils._colorsperiter` and "
-                            "`HTMLElementUtils._colorsperbarcode` must be JSON strings"
-                        )
+                    if isinstance(value_value, str):
+                        try:
+                            json.loads(value_value)
+                        except json.JSONDecodeError:
+                            raise AssertionError(
+                                "The setting values of `markerUtils._colorsperkey`, "
+                                "`HTMLElementUtils._colorsperiter` and "
+                                "`HTMLElementUtils._colorsperbarcode` must be JSON"
+                            )
+                    else:
+                        assert isinstance(value_value, dict)
                     expected_radios_data["cb_gr"] = True
                     expected_radios_data["cb_gr_rand"] = False
                     expected_radios_data["cb_gr_key"] = False
