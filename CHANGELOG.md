@@ -12,6 +12,8 @@ New schema versions: 1.2, 0.2
 ### Added
 - New Project.menuButtons field (v0, v1)
 - New Filter enum items: SplitChannel, Colormap (v1)
+- New Layer.clip field (v1)
+- New Project.collectionLayout field (v1)
 
 ### Fixed
 
