@@ -133,7 +133,7 @@ class Layer(SchemaBaseModelV00):
 
 class LayerFilter(SchemaBaseModelV00):
     name: Filter = Field(description="Filter name.")
-    value: Union[str, bool] = Field(description="Filter parameter.")
+    value: Union[str, bool, int, float] = Field(description="Filter parameter.")
 
 
 class BoundingBox(SchemaBaseModelV00):
