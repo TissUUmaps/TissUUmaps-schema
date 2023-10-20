@@ -114,6 +114,38 @@ class Shape(str, Enum):
     ARROW = "arrow"
 
 
+class LayoutAxis(str, Enum):
+    HORIZONTAL = "horizontally"
+    VERTICAL = "vertically"
+
+
+class CollectionLayout(SchemaBaseModel):
+    immediately: Optional[bool] = Field(
+        default=False,
+        description="Whether to animate to the new arrangement.",
+    )
+    layout: Optional[LayoutAxis] = Field(
+        default=None,
+        description="See collectionLayout in OpenSeadragon.Options.",
+    )
+    rows: Optional[int] = Field(
+        default=None,
+        description="See collectionRows in OpenSeadragon.Options.",
+    )
+    columns: Optional[int] = Field(
+        default=None,
+        description="See collectionColumns in OpenSeadragon.Options.",
+    )
+    tileSize: Optional[float] = Field(
+        default=None,
+        description="See collectionTileSize in OpenSeadragon.Options.",
+    )
+    tileMargin: Optional[float] = Field(
+        default=None,
+        description="See collectionTileMargin in OpenSeadragon.Options.",
+    )
+
+
 class LayerClip(SchemaBaseModel):
     x: float = Field(
         description="Left coordinate of the clip in image pixel coordinate."
@@ -534,6 +566,15 @@ class Project(RootSchemaBaseModelV01):
             "Mode defining how image layers will be merged (composited) with each "
             "other. Valid string values are 'source-over' and 'lighter', which "
             "correspond to 'Channels' and 'Composite' in the GUI."
+        ),
+    )
+    collection_layout: Optional[CollectionLayout] = Field(
+        default=None,
+        alias="collectionLayout",
+        description=(
+            "Options to be passed to OpenSeadragon arrange method when in collection"
+            "mode. See "
+            "(https://openseadragon.github.io/docs/OpenSeadragon.World.html#arrange)"
         ),
     )
     mpp: Optional[float] = Field(
