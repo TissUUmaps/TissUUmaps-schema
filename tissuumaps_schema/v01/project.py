@@ -740,7 +740,7 @@ class Project(RootSchemaBaseModelV01):
                                 "`HTMLElementUtils._colorsperbarcode` must be JSON"
                             )
                     else:
-                        assert LayoutAxis isinstance(value_value, (dict, list))
+                        assert isinstance(value_value, (dict, list))
                     expected_radios_data["cb_gr"] = True
                     expected_radios_data["cb_gr_rand"] = False
                     expected_radios_data["cb_gr_key"] = False
