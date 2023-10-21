@@ -14,7 +14,7 @@ New schema versions: 1.2, 0.2
 - New Filter enum items: SplitChannel, Colormap (v1)
 - New Layer.clip field (v1)
 - New Project.collectionLayout field (v1)
-- LayerFilter values can be strings, booleans or numbers (v0, v1) 
+- LayerFilter values can be strings, booleans or numbers (v0, v1)
 - Allow list values: ExpectedHeader.cb_gr_list, ExpectedHeader.pie_list, ExpectedHeader.shape_gr_list (v1)
 - Fix default uid value for ExpectedHeader (v0)
 
