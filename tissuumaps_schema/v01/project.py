@@ -93,6 +93,8 @@ class Filter(str, Enum):
     THRESHOLD = "Threshold"
     EROSION = "Erosion"
     DILATION = "Dilation"
+    SPLIT_CHANNEL = "SplitChannel"
+    COLORMAP = "Colormap"
 
 
 class Shape(str, Enum):
@@ -110,6 +112,49 @@ class Shape(str, Enum):
     RING = "ring"
     X = "x"
     ARROW = "arrow"
+
+
+class LayoutAxis(str, Enum):
+    HORIZONTALLY = "horizontally"
+    VERTICALLY = "vertically"
+
+
+class CollectionLayout(SchemaBaseModel):
+    immediately: Optional[bool] = Field(
+        default=False,
+        description="Whether to animate to the new arrangement.",
+    )
+    layout: Optional[LayoutAxis] = Field(
+        default=None,
+        description="See collectionLayout in OpenSeadragon.Options.",
+    )
+    rows: Optional[int] = Field(
+        default=None,
+        description="See collectionRows in OpenSeadragon.Options.",
+    )
+    columns: Optional[int] = Field(
+        default=None,
+        description="See collectionColumns in OpenSeadragon.Options.",
+    )
+    tileSize: Optional[float] = Field(
+        default=None,
+        description="See collectionTileSize in OpenSeadragon.Options.",
+    )
+    tileMargin: Optional[float] = Field(
+        default=None,
+        description="See collectionTileMargin in OpenSeadragon.Options.",
+    )
+
+
+class LayerClip(SchemaBaseModel):
+    x: float = Field(
+        description="Left coordinate of the clip in image pixel coordinate."
+    )
+    y: float = Field(
+        description="Top coordinate of the clip in image pixel coordinate."
+    )
+    w: float = Field(description="Width of the clip in image pixel coordinate.")
+    h: float = Field(description="Height of the clip in image pixel coordinate.")
 
 
 class Layer(SchemaBaseModel):
@@ -132,11 +177,18 @@ class Layer(SchemaBaseModel):
         description="Flip the image horizontally.",
     )
     scale: Optional[float] = Field(default=None, description="Scale of the image.")
+    clip: Optional[LayerClip] = Field(
+        default=None,
+        description=(
+            "Bounding box used to clip image in image pixel coordinate. If not "
+            "specified, the whole image is shown."
+        ),
+    )
 
 
 class LayerFilter(SchemaBaseModel):
     name: Filter = Field(description="Filter name.")
-    value: str = Field(description="Filter parameter.")
+    value: Union[str, bool, int, float] = Field(description="Filter parameter.")
 
 
 class BoundingBox(SchemaBaseModel):
@@ -182,7 +234,7 @@ class ExpectedHeader(SchemaBaseModel):
             "hexadecimal RGB colors in format '#ff0000'."
         ),
     )
-    cb_gr_dict: str = Field(
+    cb_gr_dict: Union[str, dict[str, Any], list[str]] = Field(
         default="",
         description=(
             "JSON string specifying a custom dictionary for mapping group keys to "
@@ -218,7 +270,7 @@ class ExpectedHeader(SchemaBaseModel):
             "characters in the CSV column data."
         ),
     )
-    pie_dict: str = Field(
+    pie_dict: Union[str, dict[str, Any], list[str]] = Field(
         default="",
         description=(
             "JSON string specifying a custom dictionary for mapping pie chart sector "
@@ -237,7 +289,7 @@ class ExpectedHeader(SchemaBaseModel):
         default="cross",
         description="Name or index of a single fixed shape to be used for all markers.",
     )
-    shape_gr_dict: str = Field(
+    shape_gr_dict: Union[str, dict[str, Any], list[str]] = Field(
         default="",
         description=(
             "JSON string specifying a custom dictionary for mapping group keys to "
@@ -393,6 +445,13 @@ class DropdownOption(SchemaBaseModel):
     )
 
 
+class menuButton(SchemaBaseModel):
+    text: Union[list[str], str] = Field(
+        description=("Text of the menu item. If list, then a nested menu is created.")
+    )
+    url: str = Field(description="Url of the menu item.")
+
+
 class MarkerFile(SchemaBaseModel):
     title: str = Field(description="Name of marker button.")
     comment: Optional[str] = Field(
@@ -509,6 +568,15 @@ class Project(RootSchemaBaseModelV01):
             "correspond to 'Channels' and 'Composite' in the GUI."
         ),
     )
+    collection_layout: Optional[CollectionLayout] = Field(
+        default=None,
+        alias="collectionLayout",
+        description=(
+            "Options to be passed to OpenSeadragon arrange method when in collection"
+            "mode. See "
+            "(https://openseadragon.github.io/docs/OpenSeadragon.World.html#arrange)"
+        ),
+    )
     mpp: Optional[float] = Field(
         default=None,
         description=(
@@ -577,6 +645,11 @@ class Project(RootSchemaBaseModelV01):
         alias="backgroundColor",
         description="Background color of the viewer.",
     )
+    menu_buttons: Optional[list[menuButton]] = Field(
+        default=None,
+        alias="menuButtons",
+        description="List of menu items to be added to the menu bar.",
+    )
     settings: list[Setting] = []
 
     @classmethod
@@ -597,9 +670,9 @@ class Project(RootSchemaBaseModelV01):
             if "expectedRadios" not in marker_file_data:
                 marker_file_data["expectedRadios"] = {}
             expected_radios_data = marker_file_data["expectedRadios"]
-            # uid: "uniquetab" --> None
-            if marker_file_data.get("uid") == "uniquetab":
-                marker_file_data["uid"] = None
+            # uid: None --> "uniquetab"
+            if marker_file_data.get("uid") is None:
+                marker_file_data["uid"] = "uniquetab"
             # infer name from title
             title_value: str = marker_file_data["title"]
             marker_file_data["name"] = title_value.replace("Download", "").strip()
@@ -657,15 +730,17 @@ class Project(RootSchemaBaseModelV01):
                     module_value == "HTMLElementUtils"
                     and function_value in ("_colorsperiter", "_colorsperbarcode")
                 ):
-                    assert isinstance(value_value, str)
-                    try:
-                        json.loads(value_value)
-                    except json.JSONDecodeError:
-                        raise AssertionError(
-                            "The setting values of `markerUtils._colorsperkey`, "
-                            "`HTMLElementUtils._colorsperiter` and "
-                            "`HTMLElementUtils._colorsperbarcode` must be JSON strings"
-                        )
+                    if isinstance(value_value, str):
+                        try:
+                            json.loads(value_value)
+                        except json.JSONDecodeError:
+                            raise AssertionError(
+                                "The setting values of `markerUtils._colorsperkey`, "
+                                "`HTMLElementUtils._colorsperiter` and "
+                                "`HTMLElementUtils._colorsperbarcode` must be JSON"
+                            )
+                    else:
+                        assert isinstance(value_value, (dict, list))
                     expected_radios_data["cb_gr"] = True
                     expected_radios_data["cb_gr_rand"] = False
                     expected_radios_data["cb_gr_key"] = False
