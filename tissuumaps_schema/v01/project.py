@@ -115,8 +115,8 @@ class Shape(str, Enum):
 
 
 class LayoutAxis(str, Enum):
-    HORIZONTAL = "horizontally"
-    VERTICAL = "vertically"
+    HORIZONTALLY = "horizontally"
+    VERTICALLY = "vertically"
 
 
 class CollectionLayout(SchemaBaseModel):
