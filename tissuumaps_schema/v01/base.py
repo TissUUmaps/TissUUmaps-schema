@@ -2,7 +2,7 @@ from pydantic import Field
 
 from ..base import RootSchemaBaseModel
 
-VERSION = "1.2"
+VERSION = "1.3"
 
 
 class RootSchemaBaseModelV01(RootSchemaBaseModel):
