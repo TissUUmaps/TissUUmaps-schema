@@ -715,6 +715,8 @@ class Project(RootSchemaBaseModelV01):
                     ), "The `markerUtils._randomShape` setting value must be a bool"
                     expected_radios_data["shape_fixed"] = not value_value
                     if not value_value:
+                        expected_radios_data["shape_gr"] = False
+                        expected_radios_data["shape_gr_rand"] = True
                         expected_header_data["shape_fixed"] = "square"
                 # marker opacity
                 if module_value == "glUtils" and function_value == "_markerOpacity":
