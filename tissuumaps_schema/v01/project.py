@@ -537,6 +537,9 @@ class RegionFile(SchemaBaseModel):
 class Project(RootSchemaBaseModelV01):
     _previous_model_type: ClassVar[Optional[Type[RootSchemaBaseModel]]] = ProjectV00
     filename: Optional[str] = Field(default=None, description="Name of the project.")
+    description: Optional[str] = Field(
+        default=None, description="Description of the project. Can contain html tags."
+    )
     link: Optional[str] = Field(
         default=None,
         description=(
@@ -712,6 +715,8 @@ class Project(RootSchemaBaseModelV01):
                     ), "The `markerUtils._randomShape` setting value must be a bool"
                     expected_radios_data["shape_fixed"] = not value_value
                     if not value_value:
+                        expected_radios_data["shape_gr"] = False
+                        expected_radios_data["shape_gr_rand"] = True
                         expected_header_data["shape_fixed"] = "square"
                 # marker opacity
                 if module_value == "glUtils" and function_value == "_markerOpacity":
