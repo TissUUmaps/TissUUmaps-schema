@@ -9,7 +9,7 @@ def guess_schema_version(model_data: dict[str, Any]) -> str:
         "expectedCSV" in marker_file for marker_file in marker_files
     ):
         return v00.VERSION
-    return model_data.get("schemaVersion", v01.VERSION)
+    return str(model_data.get("schemaVersion", v01.VERSION))
 
 
 def get_major_version(version: str) -> str:
