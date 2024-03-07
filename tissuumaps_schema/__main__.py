@@ -1,7 +1,7 @@
 from tissuumaps_schema._cli import cli
 
 
-def main():
+def main() -> None:
     cli(prog_name="tissuumaps-schema")
 
 
