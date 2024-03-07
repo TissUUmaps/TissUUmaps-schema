@@ -1,6 +1,29 @@
 [build-system]
-requires = ["setuptools>=62.6.0", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "tissuumaps-schema"
+description = "Pydantic schema for TissUUmaps"
+readme = {file = "README.md", content-type = "text/markdown"}
+authors = [
+    {name = "SciLifeLab BioImage Informatics Facility (BIIF)", email = "biif@scilifelab.se"},
+]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+]
+requires-python = ">=3.9"
+dependencies = ["click", "pydantic>=2"]
+dynamic = ["version"]
+
+[project.scripts]
+tissuumaps-schema = "tissuumaps_schema._cli:cli"
 
 [tool.pytest.ini_options]
 addopts = ["--cov=tissuumaps_schema", "--cov-report=xml:coverage.xml"]
