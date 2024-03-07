@@ -89,7 +89,6 @@ def generate(
             f"'{model_type_name}' not in {root_model_type_names}", param_hint="MODEL"
         )
     json_schema_data = model_type.model_json_schema(by_alias=True)
-    _remove_json_schema_titles_inplace(json_schema_data)
     json_schema_str = json.dumps(json_schema_data, indent=indent)
     click.echo(message=json_schema_str, file=json_schema_file)
 
@@ -219,12 +218,3 @@ def validate(
             f"'{model_type_name}' not in {root_model_type_names}", param_hint="MODEL"
         )
     model_type.parse(model_data, strict=strict)
-
-
-def _remove_json_schema_titles_inplace(*args) -> None:
-    for arg in args:
-        if isinstance(arg, dict):
-            arg.pop("title", None)
-            _remove_json_schema_titles_inplace(*arg.values())
-        elif isinstance(arg, list):
-            _remove_json_schema_titles_inplace(*arg)
