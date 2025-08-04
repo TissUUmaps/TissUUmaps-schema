@@ -710,9 +710,9 @@ class Project(RootSchemaBaseModelV01):
                 value_value = setting_data["value"]
                 # marker shape
                 if module_value == "markerUtils" and function_value == "_randomShape":
-                    assert isinstance(
-                        value_value, bool
-                    ), "The `markerUtils._randomShape` setting value must be a bool"
+                    assert isinstance(value_value, bool), (
+                        "The `markerUtils._randomShape` setting value must be a bool"
+                    )
                     expected_radios_data["shape_fixed"] = not value_value
                     if not value_value:
                         expected_radios_data["shape_gr"] = False
